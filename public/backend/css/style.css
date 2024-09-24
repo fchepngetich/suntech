@@ -176,7 +176,7 @@ Version:1.0
   100% {-webkit-transform: scale(1, 1); opacity:0;}
 }
 /* End Preloader */
-
+.btn-danger {border-radius: 20px;}
 .btn {
 	position: relative;
 	font-weight: 500;
@@ -1654,6 +1654,26 @@ Version:1.0
 /*======================================
    Start Most Popular CSS
 ========================================*/
+
+
+.product-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.discounted-price {
+    font-size: 18px;
+    color: #F48B36; /* You can change this color */
+
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #888888;
+    font-size: 16px;
+}
+
 .pro-tab-viewmore-wrap {
 	position: relative;
 	text-align: center;
