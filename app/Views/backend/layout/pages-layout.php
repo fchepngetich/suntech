@@ -68,12 +68,11 @@
     <script src="backend/js/jquery.min.js"></script>
     <script src="backend/js/jquery-migrate-3.0.0.js"></script>
 	<script src="backend/js/jquery-ui.min.js"></script>
+
 	<!-- Popper JS -->
 	<script src="backend/js/popper.min.js"></script>
 	<!-- Bootstrap JS -->
 	<script src="backend/js/bootstrap.min.js"></script>
-	<!-- Color JS -->
-	<script src="backend/js/colors.js"></script>
 	<!-- Slicknav JS -->
 	<script src="backend/js/slicknav.min.js"></script>
 	<!-- Owl Carousel JS -->

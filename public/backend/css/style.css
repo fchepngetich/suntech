@@ -181,7 +181,7 @@ Version:1.0
 	position: relative;
 	font-weight: 500;
 	font-size:14px;
-	color: #fff;
+	color: #fff !important;
 	background: #333;
 	display: inline-block;
 	-webkit-transition: all 0.4s ease;
@@ -1372,7 +1372,7 @@ Version:1.0
 /* Hero Area 3 */
 .hero-area3{}
 .hero-area3 .big-content{
-	background-image: url('https://via.placeholder.com/850x530');
+    background-image: url('/backend/images/Main.png');
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -1415,11 +1415,17 @@ Version:1.0
 	position:relative;
 }
 .hero-area3 .small-content.first{
-	background-image: url('https://via.placeholder.com/450x300');
+    background-image: url('/backend/images/Featured1.png');
 }
 
 .hero-area3 .small-content.secound{
-	background-image: url('https://via.placeholder.com/450x300');
+    background-image: url('/backend/images/Featured2.png');
+}
+.hero-area3 .small-content.third{
+    background-image: url('/backend/images/Featured3.png');
+}
+.hero-area3 .small-content.fourth{
+    background-image: url('/backend/images/Featured4.png');
 }
 .hero-area3 .small-content .inner {
 	padding: 30px;

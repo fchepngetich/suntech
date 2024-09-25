@@ -80,37 +80,46 @@
 								<a href="#" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i> <span class="pl-1">My Account</span></a>
 							</div>
 							<div class="sinlge-bar shopping">
-								<a href="#" class="single-icon"><i class="ti-bag"></i> <span class="pl-1">Cart</span> <span class="total-count ml-3">2</span></a>
-								<!-- Shopping Item -->
-								<div class="shopping-item">
-									<div class="dropdown-cart-header">
-										<span>2 Items</span>
-										<a href="#">View Cart</a>
-									</div>
-									<ul class="shopping-list">
-										<li>
-											<a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
-											<a class="cart-img" href="#"><img src="https://via.placeholder.com/70x70" alt="#"></a>
-											<h4><a href="#">Woman Ring</a></h4>
-											<p class="quantity">1x - <span class="amount">$99.00</span></p>
-										</li>
-										<li>
-											<a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
-											<a class="cart-img" href="#"><img src="https://via.placeholder.com/70x70" alt="#"></a>
-											<h4><a href="#">Woman Necklace</a></h4>
-											<p class="quantity">1x - <span class="amount">$35.00</span></p>
-										</li>
-									</ul>
-									<div class="bottom">
-										<div class="total">
-											<span>Total</span>
-											<span class="total-amount">$134.00</span>
-										</div>
-										<a href="checkout.html" class="btn animate">Checkout</a>
-									</div>
-								</div>
-								<!--/ End Shopping Item -->
-							</div>
+    <a href="#" class="single-icon">
+        <i class="ti-bag"></i> 
+        <span class="pl-1">Cart</span> 
+        <span class="total-count ml-3"><?= isset(session()->get('cart')['total_items']) ? session()->get('cart')['total_items'] : 0 ?></span>
+    </a>
+
+    <!-- Shopping Item -->
+    <?php $cart = \Config\Services::cart(); ?>
+<div class="shopping-item">
+    <div class="dropdown-cart-header">
+        <span><?= $cart->totalItems() ?> Items</span>
+        <a href="<?= base_url('/cart') ?>">View Cart</a>
+    </div>
+    <ul class="shopping-list">
+        <?php if ($cart->contents()) : ?>
+            <?php foreach ($cart->contents() as $item) : ?>
+                <li>
+                    <a href="#" class="remove" title="Remove this item" data-id="<?= $item['rowid'] ?>"><i class="fa fa-remove"></i></a>
+                    <a class="cart-img" href="#"><img src="<?= base_url('writable/uploads/' . $item['options']['image']) ?>" alt="#"></a>
+                    <h4><a href="#"><?= $item['name'] ?></a></h4>
+                    <p class="quantity"><?= $item['qty'] ?>x - <span class="amount">$<?= number_format($item['price'], 2) ?></span></p>
+                </li>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <li><p>Your cart is empty!</p></li>
+        <?php endif; ?>
+    </ul>
+
+    <div class="bottom">
+        <div class="total">
+            <span>Total</span>
+            <span class="total-amount">$<?= number_format($cart->total(), 2) ?></span>
+        </div>
+        <a href="<?= base_url('/checkout') ?>" class="btn animate">Checkout</a>
+    </div>
+</div>
+
+    <!--/ End Shopping Item -->
+</div>
+
 						</div>
 					</div>
 				</div>
