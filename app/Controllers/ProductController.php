@@ -21,6 +21,20 @@ class ProductController extends BaseController
             $data['products'] = $this->productModel->findAll();
             return view('backend/pages/products/home/home.php', $data);
         }
+
+        public function details($slug)
+{
+    // Find the product by slug
+    $product = $this->productModel->where('slug', $slug)->first(); 
+    if (!$product) {
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Product not found');
+    }
+
+    $data['product'] = $product;
+
+    return view('backend/pages/products/product-detail', $data); 
+}
+
     
         public function create()
         {

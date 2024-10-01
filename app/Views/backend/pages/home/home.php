@@ -7,9 +7,9 @@
                 <div class="col-lg-8 col-12">
                     <div class="big-content">
                         <div class="inner">
-                            <!-- <h4 class="title">Mega sale up to <span>50%</span> off for all</h4>
+                            <h4 class="title">Mega sale up to <span>50%</span> off for all</h4>
                             <p class="des">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia iste
-                                laborum deleniti nam in quos qui nemo ipsum numquam.</p>-->
+                                laborum deleniti nam in quos qui nemo ipsum numquam.</p>
                             <div class="button">
                                 <a href="#" class="btn">Shop Now</a>
                             </div>
@@ -21,7 +21,7 @@
                         <div class="col-md-6">
                             <div class="small-content first">
                                 <div class="inner">
-                                    <!-- <h4 class="title">Awesome Bag <br> 2020</h4> -->
+                                    <h4 class="title">Awesome Bag <br> 2020</h4>
                                     <div class="button">
                                         <a href="#" class="btn">Shop Now</a>
                                     </div>
@@ -31,7 +31,7 @@
                         <div class="col-md-6">
                             <div class="small-content secound">
                                 <div class="inner">
-                                    <!-- <h4 class="title">Awesome Bag <br> 2020</h4> -->
+                                    <h4 class="title">Awesome Bag <br> 2020</h4>
                                     <div class="button">
                                         <a href="#" class="btn">Shop Now</a>
                                     </div>
@@ -43,7 +43,7 @@
                         <div class="col-md-6">
                             <div class="small-content third">
                                 <div class="inner">
-                                    <!-- <h4 class="title">Summer travel <br> collection</h4> -->
+                                    <h4 class="title">Summer travel <br> collection</h4>
                                     <div class="button">
                                         <a href="#" class="btn">Discover Now</a>
                                     </div>
@@ -53,7 +53,7 @@
                         <div class="col-md-6">
                             <div class="small-content fourth">
                                 <div class="inner">
-                                    <!-- <h4 class="title">Summer travel <br> collection</h4> -->
+                                    <h4 class="title">Summer travel <br> collection</h4>
                                     <div class="button">
                                         <a href="#" class="btn">Discover Now</a>
                                     </div>
@@ -95,11 +95,11 @@
             <span class="ml-auto"> <a class="btn btn-sm btn-info" href="">View All</a> </span>
         </div>
         <div class="row">
-            <?php foreach ($recommendedProducts as $product): ?>
+        <?php foreach ($recommendedProducts as $product): ?>
                 <div class="col-xl-2 col-lg-3 col-md-4 col-12">
                     <div class="single-product">
                         <div class="product-img">
-                        <a href="product-details.html">
+                            <a href="product-details.html">
                                 <img class="default-img" src="<?= base_url(relativePath: '/backend/' . $product['image']) ?>"
                                     alt="#">
                                 <img class="hover-img" src="<?= base_url(relativePath: '/backend/' . $product['image']) ?>" alt="#">
@@ -108,22 +108,22 @@
                                 <div class="product-action">
                                     <a data-toggle="modal" data-target="#exampleModal" title="Quick View" href="#"><i
                                             class="ti-eye"></i><span>Quick Shop</span></a>
-                                    <a title="Wishlist" href="#"><i class="ti-heart"></i><span>Add to Wishlist</span></a>
-                                </div>
+                                            <a title="Wishlist" class="add-to-wishlist" data-id="<?= $product['id'] ?>" href="#"><i class="ti-heart"></i><span>Add to Wishlist</span></a>
+                                            </div>
                                 <div class="product-action-2">
                                     <a title="Add to cart" href="#">Add to cart</a>
                                 </div>
                             </div>
                         </div>
                         <div class="product-content">
-                            <h3><a href="product-details.html"><?= $product['name'] ?></a></h3>
-                            <div class="product-price">
+                        <h3><a href="<?= base_url('admin/products/details/' . $product['slug']) ?>"><?= $product['name'] ?></a></h3>
+                        <div class="product-price">
                                 <span class="discounted-price">$00</span>
                                 <span class="original-price">$<?= $product['price'] ?></span>
                             </div>
                         </div>
                         <div class="product-action-2 m-2">
-                            <a title="Add to cart" class="btn-sm btn-danger" href="#">Add to cart</a>
+                        <a title="Add to cart" class="btn-sm btn-danger add-to-cart" data-id="<?= $product['id'] ?>" href="#">Add to cart</a>
                         </div>
                     </div>
                 </div>
@@ -173,16 +173,16 @@
                                 <div class="product-action">
                                     <a data-toggle="modal" data-target="#exampleModal" title="Quick View" href="#"><i
                                             class="ti-eye"></i><span>Quick Shop</span></a>
-                                    <a title="Wishlist" href="#"><i class="ti-heart"></i><span>Add to Wishlist</span></a>
-                                </div>
+                                            <a title="Wishlist" class="add-to-wishlist" data-id="<?= $product['id'] ?>" href="#"><i class="ti-heart"></i><span>Add to Wishlist</span></a>
+                                            </div>
                                 <div class="product-action-2">
                                     <a title="Add to cart" href="#">Add to cart</a>
                                 </div>
                             </div>
                         </div>
                         <div class="product-content">
-                            <h3><a href="product-details.html"><?= $product['name'] ?></a></h3>
-                            <div class="product-price">
+                        <h3><a href="<?= base_url('admin/products/details/' . $product['slug']) ?>"><?= $product['name'] ?></a></h3>
+                        <div class="product-price">
                                 <span class="discounted-price">$00</span>
                                 <span class="original-price">$<?= $product['price'] ?></span>
                             </div>
@@ -262,12 +262,13 @@
 <!-- End Shop Blog  -->
 
 
-<?= $this->section('scripts') ?>
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- FlexSlider CSS -->
+<?= $this->section('stylesheets') ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexslider/2.7.2/flexslider.min.css">
-<!-- FlexSlider JS -->
+<?= $this->endSection() ?>
+
+
+<?= $this->section('scripts') ?>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flexslider/2.7.2/jquery.flexslider-min.js"></script>
 <script>
     jQuery.noConflict();
@@ -279,26 +280,21 @@
     });
 })(jQuery);
 $(document).ready(function () {
-    // Bind the click event to the 'add-to-cart' button
     $('.add-to-cart').on('click', function (e) {
-        e.preventDefault();  // Prevent the default link behavior
+        e.preventDefault(); 
 
-        // Get the product ID from the data attribute
         var productId = $(this).data('id');
 
-        // Check if the productId is being captured correctly
         console.log('Button clicked. Product ID:', productId);
 
-        // Make sure the productId is not undefined or empty
         if (!productId) {
             console.log('Error: Product ID is missing.');
             alert('Error: Product ID is missing.');
             return;
         }
 
-        // Make the AJAX request to add the product to the cart
         $.ajax({
-            url: '<?= base_url('cart/add') ?>/' + productId, // Ensure the URL is constructed correctly
+            url: '<?= base_url('cart/add') ?>/' + productId, 
 
     type: 'POST',
     data: { product_id: productId },
@@ -306,12 +302,11 @@ $(document).ready(function () {
     success: function (response) {
         console.log('AJAX success response:', response);
         if (response.status === 'success') {
-            // Update the cart count in the HTML
             $('.total-count').text(response.totalItems);
             console.log('Cart updated. Total items:', response.totalItems);
-            
-            // Optional: Provide user feedback
-            alert('Success: ' + response.message); // Simple alert
+            // $('#cartModal').modal('show');
+
+            alert('Success: ' + response.message); 
         } else {
             console.log('Error from server:', response.message);
             alert(response.message);
@@ -325,6 +320,42 @@ $(document).ready(function () {
 
     });
 });
+
+$(document).on('click', '.remove', function(e) {
+    e.preventDefault();
+    var rowid = $(this).data('id');
+    $.ajax({
+        url: '/cart/remove/' + rowid,
+        type: 'GET',
+        success: function(response) {
+            location.reload(); 
+        }
+    });
+});
+
+
+$(document).on('click', '.add-to-wishlist', function (e) {
+    e.preventDefault();
+    
+    var productId = $(this).data('id');
+
+    $.ajax({
+        url: '<?= base_url('wishlist/add') ?>',
+        type: 'POST',
+        data: { id: productId },
+        success: function (response) {
+            if (response.status === 'success') {
+                Swal.fire('Added!', 'The product has been added to your wishlist.', 'success');
+            } else {
+                Swal.fire('Error!', response.message, 'error');
+            }
+        },
+        error: function () {
+            Swal.fire('Error!', 'Could not add to wishlist. Please try again.', 'error');
+        }
+    });
+});
+
 
     
 

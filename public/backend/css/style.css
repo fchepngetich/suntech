@@ -176,6 +176,106 @@ Version:1.0
   100% {-webkit-transform: scale(1, 1); opacity:0;}
 }
 /* End Preloader */
+
+
+/* Main Menu Styling */
+.nav.main-menu.menu > li {
+    position: initial; /* Ensure submenu is positioned relative to the parent */
+}
+
+.nav.main-menu.menu > li > a {
+    display: block;
+    padding: 10px 15px; /* Adjust padding as necessary */
+    color: #333; /* Customize text color */
+    text-decoration: none;
+}
+
+/* Submenu Styling */
+.nav.main-menu.menu > li > ul.submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+	right: 0;
+    transform: translateX(-50%);
+    width: 100vh;
+    max-width: 1200px;
+    background-color: #fff;
+    display: none;
+    padding: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow: hidden;
+    max-height: 400px;
+	text-align: center;;
+}
+
+.nav.main-menu.menu > li:hover > ul.submenu {
+    display: table; 
+}
+
+.nav.main-menu.menu .submenu li {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.nav.main-menu.menu .submenu li a {
+    display: block;
+    padding:3px 0;
+    text-align: left;
+    color: #333; 
+    text-decoration: none;
+}
+
+.nav.main-menu.menu .submenu li a:hover {
+    background-color: #f0f0f0;
+}
+
+.products-list {
+    padding: 5px 0;
+    list-style: none;
+	
+}
+#F7941D
+
+
+.products-list li a {
+    color: #007bff; 
+    text-decoration: none;
+	display: inline-block;
+}
+
+.products-list li a:hover {
+    text-decoration: underline;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.header .nav li .submenu li a:hover{
+	color: #F7941D!important;;
+	background:#fff;
+}
+.header .nav li .submenu li a{
+	color: #F7941D!important;;
+	background: #fff !important;;
+}
+
+.no-items p{color: #333 !important;}
+
+
+
+
+
+
+
+
+
+.content p{color: #333 !important;}
+
+
+
 .btn-danger {border-radius: 20px;}
 .btn {
 	position: relative;
@@ -400,7 +500,7 @@ Version:1.0
 	color: #fff;
 	font-size: 13px;
 	font-weight: 500;
-	border-right: 1px solid #f0f0f0;
+	/* border-right: 1px solid #f0f0f0; */
 	padding: 0px 13px;
 }
 .header.shop .list-main li i {
@@ -1660,6 +1760,17 @@ Version:1.0
 /*======================================
    Start Most Popular CSS
 ========================================*/
+.btn-number {
+    color: #333 !important; /* Set text color to white */
+    border: none; /* Remove any borders that might conflict */
+    padding: 10px 15px; /* Add some padding for better clickability */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+.btn-number:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
 
 
 .product-price {
@@ -2953,7 +3064,7 @@ Version:1.0
 	padding:0px 50px;
 }
 .shopping-summery thead {
-	background: #F7941D;
+	background: #424646;
 	color: #fff;
 }
 .shopping-summery thead tr th {
@@ -3425,7 +3536,7 @@ Version:1.0
    Login & Register CSS
 ========================================*/
 .shop.login {
-	padding: 100px 0;
+	padding: 30px 0;
 }
 .shop.login .login-form h2 {
 	position:relative;
@@ -3804,9 +3915,7 @@ Version:1.0
 /*======================================
    Start Shop Newsletter CSS
 ========================================*/
-.shop-newsletter{
-	background:#fff;
-}
+
 .shop-newsletter .inner{
 	text-align:center;
 }
@@ -3831,7 +3940,7 @@ Version:1.0
 	display: inline-block;
 }
 .shop-newsletter .newsletter-inner input {
-	width: 480px;
+	width: 300px;
 	height: 55px;
 	border-radius: 0px;
 	padding: 0px 30px;
@@ -3842,7 +3951,7 @@ Version:1.0
 	border-radius: 0;
 	border: none;
 	border: 1px solid #ececec;
-	border-radius: 30px 0 0 30px;
+	border-radius: none;
 }
 .shop-newsletter .newsletter-inner button{
 	border:none;
@@ -3859,7 +3968,7 @@ Version:1.0
 	background: #F7941D;
 	color: #fff;
 	left: -4px;
-	border-radius: 0 30px 30px 0;
+	border-radius: none;
 	font-size: 14px;
 	font-weight: 500;
 	text-transform: uppercase;
@@ -4918,6 +5027,11 @@ Version:1.0
 	color: #fff;
 	text-transform: capitalize;
 	margin-bottom: 30px;
+}
+.footer .single-footer li ,p{
+	
+	color: #fff;
+	
 }
 .footer .about .logo{
 	margin-bottom:20px;

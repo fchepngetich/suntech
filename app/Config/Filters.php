@@ -1,6 +1,7 @@
 <?php
 
 namespace Config;
+use App\Filters\CIFilter;
 
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
@@ -34,6 +35,8 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'cifilter'      =>CIFilter::class,
+        'auth'          =>AuthMiddleware::class,
     ];
 
     /**

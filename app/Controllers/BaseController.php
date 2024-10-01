@@ -21,6 +21,7 @@ use Psr\Log\LoggerInterface;
  */
 abstract class BaseController extends Controller
 {
+    
     /**
      * Instance of the main Request object.
      *
@@ -55,4 +56,5 @@ abstract class BaseController extends Controller
 
         // E.g.: $this->session = \Config\Services::session();
     }
+    
 }

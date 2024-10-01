@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\CategoryModel;
+use App\Models\ProductModel;
 
 class CategoryController extends BaseController
 {
@@ -21,6 +22,30 @@ class CategoryController extends BaseController
             $data['categories'] = $this->categoryModel->findAll();
             return view('categories/index', $data);
         }
+
+        public function view($slug)
+    {
+        $categoryModel = new CategoryModel();
+        $productModel = new ProductModel();
+        
+        // Find the category by slug
+        $category = $categoryModel->where('slug', $slug)->first();
+        
+        if (!$category) {
+            return redirect()->to('/'); // Redirect to homepage if category is not found
+        }
+        $categories = $categoryModel->findAll();
+        // Fetch products that belong to the category
+        $products = $productModel->where('category_id', $category['id'])->findAll();
+        
+        // Pass category and products to the view
+        return view('backend/pages/categories/category-details', [
+            'category' => $category,
+            'categories' => $categories,
+            'products' => $products
+
+        ]);
+    }
     
         public function create()
         {

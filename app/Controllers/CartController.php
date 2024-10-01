@@ -10,11 +10,8 @@ class CartController extends BaseController
 {
     public function __construct()
     {
-        // Load session service
         session();
     }
-
-    // Add product to the cart
    
     public function addToCart($productId)
     {
@@ -26,10 +23,8 @@ class CartController extends BaseController
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Product not found.']);
             }
     
-            // Call the cart service
             $cart = \Config\Services::cart();
     
-            // Prepare data to be inserted into the cart
             $data = [
                 'id'      => $product['id'],
                 'qty'     => 1,
@@ -38,31 +33,25 @@ class CartController extends BaseController
                 'options' => ['image' => $product['image']]
             ];
     
-            // Insert into cart
             if (!$cart->insert($data)) {
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Could not add to cart.']);
             }
     
-            // Get total items in the cart
             $totalItems = $cart->totalItems();
     
-            // Return JSON response with updated cart count
             return $this->response->setJSON([
                 'status' => 'success',
                 'message' => 'Product added to cart.',
                 'totalItems' => $totalItems
             ]);
         } catch (\Exception $e) {
-            // Log the error message
             log_message('error', 'Error in addToCart: ' . $e->getMessage());
             return $this->response->setJSON(['status' => 'error', 'message' => 'An error occurred.']);
         }
     }
     
-    // View Cart
     public function viewCart()
     {
-        // Call the cart service
         $cart = \Config\Services::cart();
         $cartContents = $cart->contents();
 
@@ -73,31 +62,103 @@ class CartController extends BaseController
         ]);
     }
 
-    // Remove from cart
-    public function removeFromCart($rowId)
-    {
-        // Call the cart service
-        $cart = \Config\Services::cart();
-
-        // Remove the item using its `rowid`
-        $cart->remove($rowId);
-
-        // Recalculate totals after removing the item
-        $this->getCartSummary();
-
-        return $this->response->setJSON(['status' => 'success', 'message' => 'Item removed from cart.']);
+    public function removeFromCart($rowid)
+{
+    $cart = \Config\Services::cart();
+    if ($rowid) {
+        $cart->remove($rowid);
     }
 
-    public function getCartSummary()
-    {
-        $cart = \Config\Services::cart();
-        $totalItems = $cart->totalItems();
-        $totalCost = $cart->total();
+    return redirect()->to('/cart')->with('success', 'Item removed from cart');
+}
 
-        // Store these in the session to use in the cart preview
-        session()->set('cart_total', $totalCost);
-        session()->set('cart_total_items', $totalItems);
+    public function clearCart()
+    {
+        try {
+            $cart = \Config\Services::cart();
+            $cart->destroy();
+    
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Cart cleared successfully.'
+            ]);
+        } catch (\Exception $e) {
+            log_message('error', 'Error in clearCart: ' . $e->getMessage());
+            return $this->response->setJSON(['status' => 'error', 'message' => 'An error occurred while clearing the cart.']);
+        }
     }
+
+//     public function update()
+// {
+//     $cart = \Config\Services::cart();
+
+//     $rowid = $this->request->getPost('rowid');
+//     $qty = $this->request->getPost('qty');
+
+//     if ($cart->update(['rowid' => $rowid, 'qty' => $qty])) {
+//         return $this->response->setJSON(['status' => 'success', 'message' => 'Cart updated successfully.']);
+//     } else {
+//         return $this->response->setJSON(['status' => 'error', 'message' => 'Failed to update cart.']);
+//     }
+// }
+
+public function update()
+{
+    $cart = \Config\Services::cart();
+
+    $rowid = $this->request->getPost('rowid');  // Ensure this is the correct row ID from the cart
+    $qty = $this->request->getPost('qty');
+
+    // Log to check the rowid and quantity
+    log_message('debug', 'Updating cart. Row ID: ' . $rowid . ', Quantity: ' . $qty);
+
+    // Validate the inputs
+    if (!$rowid || !$qty || $qty < 1) {
+        log_message('error', 'Invalid row ID or quantity. Row ID: ' . $rowid . ', Quantity: ' . $qty);
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Invalid request.']);
+    }
+
+    // Update the cart
+    $updateStatus = $cart->update(['rowid' => $rowid, 'qty' => $qty]);
+
+    if ($updateStatus) {
+        log_message('debug', 'Cart updated successfully for Row ID: ' . $rowid);
+        return $this->response->setJSON(['status' => 'success', 'message' => 'Cart updated successfully.']);
+    } else {
+        log_message('error', 'Failed to update cart for Row ID: ' . $rowid);
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Failed to update cart.']);
+    }
+}
+
+public function getCartItems()
+{
+    $cart = \Config\Services::cart();
+    
+    // Fetch the cart items
+    $cartContents = $cart->contents();
+
+    // If cart is empty, return empty cart response
+    if (empty($cartContents)) {
+        return $this->response->setJSON([
+            'status' => 'success',
+            'cart' => [],
+            'message' => 'Your cart is empty!'
+        ]);
+    }
+
+    // Return the cart contents
+    return $this->response->setJSON([
+        'status' => 'success',
+        'cart' => $cartContents,
+        'totalItems' => $cart->totalItems(),
+        'totalAmount' => $cart->total()
+    ]);
+}
+
+
+
+    
+
 }
 
     
