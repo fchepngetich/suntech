@@ -41,6 +41,16 @@ $routes->get('cart/getCartItems', 'CartController::getCartItems'); // For fetchi
         $routes->get('edit/(:num)', 'ProductController::edit/$1', ['as' => 'products.edit']); // Show edit form
         $routes->post('update/(:num)', 'ProductController::update/$1', ['as' => 'products.update']); // Update product
         $routes->delete('delete/(:num)', 'ProductController::delete/$1', ['as' => 'products.delete']); // Delete product
+        $routes->post('wishlist/add', 'WishlistController::addToWishlist');
+
+    });
+
+    $routes->group('products/wishlist', ['filter' => 'cifilter:auth'],static function ($routes) {
+        $routes->get('move-to-cart/(:num)', 'WishlistController::moveToCart/$1');
+        // $routes->get('add/(:num)', 'WishlistController::addToWishlist/$1');
+        $routes->get('', 'WishlistController::viewWishlist');
+        $routes->post('remove/(:num)', 'WishlistController::removeFromWishlist/$1');
+        $routes->get('move-to-cart/(:num)', 'WishlistController::moveToCart/$1');
         
     });
 

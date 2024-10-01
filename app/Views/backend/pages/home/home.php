@@ -108,7 +108,9 @@
                                 <div class="product-action">
                                     <a data-toggle="modal" data-target="#exampleModal" title="Quick View" href="#"><i
                                             class="ti-eye"></i><span>Quick Shop</span></a>
-                                            <a title="Wishlist" class="add-to-wishlist" data-id="<?= $product['id'] ?>" href="#"><i class="ti-heart"></i><span>Add to Wishlist</span></a>
+                                            <a title="Wishlist" class="add-to-wishlist" data-id="<?= $product['id'] ?>" href="javascript:void(0);">
+    <i class="ti-heart"></i><span>Add to Wishlist</span>
+</a>
                                             </div>
                                 <div class="product-action-2">
                                     <a title="Add to cart" href="#">Add to cart</a>
@@ -262,6 +264,81 @@
 <!-- End Shop Blog  -->
 
 
+
+<div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="shopping-items">
+                    <div class="dropdown-cart-header">
+                        <?php $cart = \Config\Services::cart(); ?>
+                        <h5 class="modal-title" id="cartModalLabel">
+                            <span class="pl-4"><?= $cart->totalItems() ?> Items in the cart</span>
+                        </h5>
+                    </div>
+                    <ul class="shopping-lists">
+                        <?php if ($cart->contents()): ?>
+                            <?php foreach ($cart->contents() as $item): ?>
+                                <li>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <a class="cart-img" href="#">
+                                                <img src="<?= base_url('/backend/' . $item['options']['image']) ?>" alt="<?= esc($item['name']) ?>">
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div>
+                                                <h4><a href="#"><?= esc($item['name']) ?></a></h4>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div>
+                                                <h4><a href="#">$<?= esc($item['price']) ?></a></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <li style="text-align: center;"><p>Your cart is empty!</p></li>
+                        <?php endif; ?>
+                    </ul>
+                    <div class="bottom">
+                    <div>
+                        <span><?= $cart->totalItems() ?> Items in the cart</span>
+                        </div>
+                        <div class="total">
+                            <span>Total</span>
+                            <span class="total-amount">$<?= number_format($cart->total(), 2) ?></span>
+                        </div>
+                       
+                    </div>
+                    <div class="bottom">
+                    <div class="checkout-continue">
+                            <a href="<?= base_url('/checkout') ?>" class="checkout-btn">Checkout</a>
+                            <a href="<?= base_url('/') ?>" class="continue-shopping-btn">Continue Shopping</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- End Cart Modal -->
+
+
+
+
+
+
 <?= $this->section('stylesheets') ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexslider/2.7.2/flexslider.min.css">
 <?= $this->endSection() ?>
@@ -279,6 +356,7 @@
         });
     });
 })(jQuery);
+
 $(document).ready(function () {
     $('.add-to-cart').on('click', function (e) {
         e.preventDefault(); 
@@ -295,29 +373,30 @@ $(document).ready(function () {
 
         $.ajax({
             url: '<?= base_url('cart/add') ?>/' + productId, 
+            type: 'POST',
+            data: { product_id: productId },
+            dataType: 'json',
+            success: function (response) {
+                console.log('AJAX success response:', response);
+                if (response.status === 'success') {
+                    $('.total-count').text(response.totalItems);
+                    console.log('Cart updated. Total items:', response.totalItems);
+                    
+                    // Show the cart modal after successfully adding the item
+                    $('#cartModal').modal('show');
 
-    type: 'POST',
-    data: { product_id: productId },
-    dataType: 'json',
-    success: function (response) {
-        console.log('AJAX success response:', response);
-        if (response.status === 'success') {
-            $('.total-count').text(response.totalItems);
-            console.log('Cart updated. Total items:', response.totalItems);
-            // $('#cartModal').modal('show');
-
-            alert('Success: ' + response.message); 
-        } else {
-            console.log('Error from server:', response.message);
-            alert(response.message);
-        }
-    },
-    error: function (xhr, status, error) {
-        console.error('AJAX error:', status, error);
-        alert('An error occurred while adding to cart.');
-    }
-});
-
+                    // Optionally, you can also show a toast notification
+                    toastr.success(response.message); 
+                } else {
+                    console.log('Error from server:', response.message);
+                    alert(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX error:', status, error);
+                alert('An error occurred while adding to cart.');
+            }
+        });
     });
 });
 
@@ -334,31 +413,31 @@ $(document).on('click', '.remove', function(e) {
 });
 
 
-$(document).on('click', '.add-to-wishlist', function (e) {
-    e.preventDefault();
-    
-    var productId = $(this).data('id');
+    $(document).ready(function () {
+        $('.add-to-wishlist').on('click', function (e) {
+            e.preventDefault();
 
-    $.ajax({
-        url: '<?= base_url('wishlist/add') ?>',
-        type: 'POST',
-        data: { id: productId },
-        success: function (response) {
-            if (response.status === 'success') {
-                Swal.fire('Added!', 'The product has been added to your wishlist.', 'success');
-            } else {
-                Swal.fire('Error!', response.message, 'error');
-            }
-        },
-        error: function () {
-            Swal.fire('Error!', 'Could not add to wishlist. Please try again.', 'error');
-        }
+            var productId = $(this).data('id');
+
+            $.ajax({
+                url: '<?= site_url('admin/products/wishlist/add') ?>',
+                type: 'POST',
+                data: { product_id: productId },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status == 'success') {
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('An error occurred. Please try again.');
+                }
+            });
+        });
     });
-});
-
-
-    
-
 </script>
+
 <?= $this->endSection() ?>
 <?= $this->endSection() ?>

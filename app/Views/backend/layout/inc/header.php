@@ -79,7 +79,7 @@
 					<div class="right-bar">
 						<!-- Search Form -->
 						<div class="sinlge-bar">
-							<a href="#" class="single-icon"><i class="fa fa-heart-o" aria-hidden="true"></i> <span
+							<a href="<?= base_url('/products/wishlist') ?>" class="single-icon"><i class="fa fa-heart-o" aria-hidden="true"></i> <span
 									class="pl-1">My wishlist</span> </a>
 						</div>
 						<div class="sinlge-bar">

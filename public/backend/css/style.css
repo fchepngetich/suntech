@@ -257,24 +257,131 @@ body {
 	color: #F7941D!important;;
 	background:#fff;
 }
+
 .header .nav li .submenu li a{
+	color: #333!important;;
+	background: #fff !important;;
+}
+.header .nav li .products-list li a{
 	color: #F7941D!important;;
 	background: #fff !important;;
 }
 
 .no-items p{color: #333 !important;}
 
-
-
-
-
-
-
-
-
 .content p{color: #333 !important;}
+.wishlist p{color: #333 !important;}
+.wishlist img{width:auto;height: 50px;}
+.wishlist.section {
+	padding: 50px 0;
+	position: relative;
+}
 
 
+/******carttttt***/
+.modal-content {
+	border-radius: 10px;
+	overflow: hidden;
+	max-width: 700px;
+	margin: auto; 
+}
+
+.modal-header {
+	background-color: #f8f9fa;
+	border-bottom: 1px solid #dee2e6;
+	display: flex;
+	justify-content: flex-end; /* Align close button to the right */
+}
+
+.modal-body {
+	padding: 20px;
+	height: auto !important;
+	overflow: hidden;
+
+}
+
+.shopping-items {
+	margin-top: 10px;
+	margin-bottom: 15px;
+
+}
+
+.dropdown-cart-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.shopping-lists {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.shopping-lists li {
+	
+	align-items: center;
+	justify-content: space-between;
+	padding: 15px;
+	border-bottom: 1px solid #dee2e6;
+}
+
+.cart-img img {
+	width: 50px;
+	height: auto;
+	border-radius: 5px;
+	margin-right: 10px;
+}
+
+.shopping-lists h4 {
+	margin: 0;
+	font-size: 1rem;
+	font-weight: bold;
+}
+
+.quantity {
+	margin: 0;
+}
+
+.bottom {
+	margin-top: 15px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center; /* Center items vertically */
+	padding: 0 15px;
+}
+
+.checkout-continue {
+    width: 100%;
+}
+
+.checkout-btn {
+    float: left; /* Aligns to the left */
+}
+
+.continue-shopping-btn {
+    float: right; /* Aligns to the right */
+}
+
+.total {
+	font-weight: bold;
+}
+
+.checkout-btn,
+.continue-shopping-btn {
+	background-color: #007bff;
+	color: white;
+	padding: 10px 15px;
+	border-radius: 5px;
+	text-decoration: none;
+	display: inline-block;
+}
+
+.continue-shopping-btn {
+	background-color: #28a745; /* Different color for continue shopping */
+	margin-left: 10px; /* Space between buttons */
+}
+/*******/
 
 .btn-danger {border-radius: 20px;}
 .btn {
