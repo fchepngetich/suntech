@@ -45,7 +45,7 @@
         <!-- Shop Top Controls -->
         <div class="col-12">
             <div class="shop mt-3 mb-3">
-            <h4 class="title text-center"><?= esc($category['name']) ?></h4>
+            <!-- <h4 class="title text-center"><?= esc($category['name']) ?></h4> -->
 
             </div>
         </div>

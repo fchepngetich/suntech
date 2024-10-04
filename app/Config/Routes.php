@@ -7,20 +7,88 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 
+ $routes->group('admin', static function ($routes) {
+    $routes->group('', ['filter' => 'cifilter:auth'], static function ($routes) {
+        //$routes->view('example-page','example-page');
+        $routes->get('', 'AdminController::index', ['as' => 'admin.home']);
+        $routes->get('logout', 'AdminController::logoutHandler', ['as' => 'admin.logout']);
+        $routes->get('dashboard', 'AdminController::dashboard', ['as' => 'admin.dashboard']);
+        $routes->get('get-users', 'AdminController::getUsers', ['as' => 'get-users']);
+        $routes->get('new-user', 'AdminController::addUser', ['as' => 'new-user']);
+        $routes->post('create-user', 'AdminController::createUser', ['as' => 'create-user']);
+        //$routes->get('users/edit/(:num)', 'AdminController::editUser/$1', ['as' => 'admin.users.edit']);
+        //$routes->post('users\delete/(:num)', 'AdminController::deleteUser/$1', ['as' => 'admin.users.delete']);
+        //$routes->get('users/get/(:num)', 'AdminController::getUser/$1', ['as' => 'admin.users.get']);
+        $routes->post('get-users', 'AdminController::getUser', ['as' => 'admin.users.get']);
+        $routes->get('user/edit', 'AdminController::edit', ['as' => 'user.edit']);
+        $routes->post('user/update', 'AdminController::update', ['as' => 'user.update']);
+        $routes->post('user/delete', 'AdminController::delete', ['as' => 'user.delete']);
+        $routes->get('profile', 'AdminController::profile', ['as' => 'profile']);
+        $routes->get('logs', 'LogsController::index');
+         $routes->get('change-password', 'AdminController::changePassword', ['as' => 'change_password']);
+        $routes->post('change-password', 'AdminController::updatePassword');
+        
+
+    });
+    $routes->group('products', ['filter' => 'cifilter:auth'], static function ($routes) {
+    $routes->get('', 'ProductController::index', ['as' => 'products.index']); 
+    $routes->get('add-product', 'ProductController::create', ['as' => 'products.create']);
+    $routes->post('store', 'ProductController::store', ['as' => 'products.store']);
+    $routes->get('getSubcategoriesByCategory/(:num)', 'ProductController::getSubcategoriesByCategory/$1');
+    $routes->get('getSubcategories/(:num)', 'ProductController::getSubcategoriesByCategory/$1');
+
+    $routes->get('categories', 'CategoryController::index');
+    $routes->get('categories/create', 'CategoryController::create');
+    $routes->post('categories/store', 'CategoryController::store');
+    $routes->get('categories/edit/(:num)', 'CategoryController::edit/$1');
+    $routes->post('categories/update/(:num)', 'CategoryController::update/$1');
+    $routes->post('categories/delete/(:num)', 'CategoryController::delete/$1');
+    
+});
+$routes->group('categories', ['filter' => 'cifilter:auth'], static function ($routes) {
+    
+    $routes->get('', 'CategoryController::index');
+    $routes->get('add-category', 'CategoryController::create');
+    $routes->post('store', 'CategoryController::store');
+    $routes->get('edit/(:any)', 'CategoryController::edit/$1');
+    $routes->post('update/(:num)', 'CategoryController::update/$1');
+    $routes->post('delete/(:num)', 'CategoryController::delete/$1');
+    
+});
+
+$routes->group('subcategories', ['filter' => 'cifilter:auth'], static function ($routes) {
+
+$routes->get('', 'SubcategoryController::index');
+$routes->get('add-subcategory', 'SubcategoryController::create');
+$routes->post('store', 'SubcategoryController::store');
+$routes->get('edit/(:any)', 'SubcategoryController::edit/$1');
+$routes->post('update/(:any)', 'SubcategoryController::update/$1');
+$routes->get('delete/(:any)', 'SubcategoryController::delete/$1');
+
+});
+});
 
 
 $routes->group('', static function ($routes) {
     $routes->group('', static function ($routes) {
         $routes->get('/', 'Home::index');
-        $routes->get('/cart', 'CartController::viewCart');
-        $routes->post('cart/add', 'CartController::addToCart');
-        $routes->get('/cart/add/(:num)', 'CartController::addToCart/$1');
+        $routes->get('cart', 'CartController::viewCart');
+        // $routes->post('cart/add', 'CartController::addToCart');
+        $routes->get('cart/add/(:num)', 'CartController::addToCart/$1');
         // $routes->get('/cart/remove/(:num)', 'CartController::removeFromCart/$1');
         $routes->post('cart/add/(:num)', 'CartController::addToCart/$1');
-        $routes->post('/cart/remove/(:segment)', 'CartController::removeFromCart/$1');
+        $routes->post('cart/remove/(:segment)', 'CartController::removeFromCart/$1');
         $routes->post('cart/clear', 'CartController::clearCart');
         $routes->post('cart/update', 'CartController::update'); 
+        $routes->get('cart/info', 'CartController::cartInfo');
+        $routes->get('/checkout', 'CheckoutController::startCheckout');
+        $routes->post('/checkout/process', 'CheckoutController::processOrder');
+        $routes->get('/order/confirm/(:num)', 'CheckoutController::confirmOrder/$1'); 
+        $routes->post('mpesa/initiate', 'MpesaController::initiatePayment');  // To initiate payment
+        $routes->post('mpesa/callback', 'MpesaController::handleMpesaCallback');
+        $routes->get('test', 'MpesaController::getAccessToken');
 
+        // To handle callback
         // $routes->post('cart/add/(:num)', 'CartController::add/$1'); // For adding items to the cart
 $routes->get('cart/getCartItems', 'CartController::getCartItems'); // For fetching cart items to display in the modal
 
@@ -34,10 +102,8 @@ $routes->get('cart/getCartItems', 'CartController::getCartItems'); // For fetchi
         // $routes->get('/logout', 'AuthController::logout');
     });
     $routes->group('admin/products', static function ($routes) {
-        $routes->get('', 'ProductController::index', ['as' => 'products.index']); 
         $routes->get('details/(:any)', 'ProductController::details/$1');
-        $routes->get('create', 'ProductController::create', ['as' => 'products.create']); // Show create form
-        $routes->post('store', 'ProductController::store', ['as' => 'products.store']); // Save new product
+         // Save new product
         $routes->get('edit/(:num)', 'ProductController::edit/$1', ['as' => 'products.edit']); // Show edit form
         $routes->post('update/(:num)', 'ProductController::update/$1', ['as' => 'products.update']); // Update product
         $routes->delete('delete/(:num)', 'ProductController::delete/$1', ['as' => 'products.delete']); // Delete product

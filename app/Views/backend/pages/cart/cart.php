@@ -3,6 +3,14 @@
     <?= $this->section('content') ?>
     <div class="shopping-cart section">
         <div class="container">
+        <?php if (!empty($cart)): ?>
+            <div class="row p-3 mb-1">
+    <?php $cartService = \Config\Services::cart(); ?>
+    <span class="total-count mr-auto">You have <?= $cartService->totalItems() ?> item(s) in your cart</span>
+    <!-- Checkout button aligned to the right -->
+    <a href="<?= base_url('/checkout')?>" class="btn ml-auto">Checkout Now</a>
+</div>
+
             <div class="row">
                 <div class="col-12">
                     <!-- Shopping Summary -->
@@ -21,7 +29,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($cart)): ?>
                                 <?php foreach ($cart as $item): ?>
                                     <tr>
                                         <td class="image" data-title="No">
@@ -64,20 +71,16 @@
 
                                     </tr>
                                 <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="6" class="text-center">
-                                        <p>Your cart is empty!</p>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
+                         
                         </tbody>
                     </table>
+                    <div class="button5 mb-2">
+                                        <a href="<?= base_url(relativePath: '/') ?>" class="btn">Continue shopping</a>
+                                    </div>
                     <!--/ End Shopping Summary -->
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
+
+                <div class="col-12 mt-5">
                     <!-- Total Amount -->
                     <div class="total-amount">
                         <div class="row">
@@ -105,7 +108,7 @@
                                     </ul>
                                     <div class="button5">
                                         <a href="<?= base_url('/checkout') ?>" class="btn">Checkout</a>
-                                        <a href="<?= base_url('/') ?>" class="btn">Continue shopping</a>
+                                        <!-- <a href="<?= base_url(relativePath: '/') ?>" class="btn">Continue shopping</a> -->
                                     </div>
                                 </div>
                             </div>
@@ -114,6 +117,15 @@
                     <!--/ End Total Amount -->
                 </div>
             </div>
+            <?php else: ?>
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        <h5 class="text-center">Your cart is empty!</h5>
+                                    </td>
+                                    <a class="btn" href="/">Start Shopping</a>
+                                </tr>
+                            <?php endif; ?>
+            
         </div>
     </div>
 

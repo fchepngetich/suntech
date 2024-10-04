@@ -58,29 +58,31 @@
 					<div class="mobile-nav"></div>
 				</div>
 				<div class="col-lg-5 col-md-7 col-12">
-				<div class="search-bar-top">
-    <div class="search-bar">
-        <form action="<?= base_url('search'); ?>" method="GET"> <!-- Add action and method for form submission -->
-            <select name="category"> <!-- Add name attribute for the select -->
-                <option value="">Select Category</option> <!-- Placeholder option -->
-                <!-- Dynamically Loop through Categories -->
-                <?php foreach ($categories as $category): ?>
-                    <option value="<?= $category['slug']; ?>"><?= esc($category['name']); ?></option>
-                <?php endforeach; ?>
-            </select>
-            <input name="search" placeholder="Search Products Here....." type="search">
-            <button class="btnn" type="submit"><i class="ti-search"></i></button> <!-- Added type="submit" -->
-        </form>
-    </div>
-</div>
+					<div class="search-bar-top">
+						<div class="search-bar">
+							<form action="<?= base_url('search'); ?>" method="GET">
+								<!-- Add action and method for form submission -->
+								<select name="category"> <!-- Add name attribute for the select -->
+									<option value="">Select Category</option> <!-- Placeholder option -->
+									<!-- Dynamically Loop through Categories -->
+									<?php foreach ($categories as $category): ?>
+										<option value="<?= $category['slug']; ?>"><?= esc($category['name']); ?></option>
+									<?php endforeach; ?>
+								</select>
+								<input name="search" placeholder="Search Products" type="search">
+								<button class="btnn" type="submit"><i class="ti-search"></i></button>
+								<!-- Added type="submit" -->
+							</form>
+						</div>
+					</div>
 
 				</div>
 				<div class="col-lg-5 col-md-3 col-12">
 					<div class="right-bar">
 						<!-- Search Form -->
 						<div class="sinlge-bar">
-							<a href="<?= base_url('/products/wishlist') ?>" class="single-icon"><i class="fa fa-heart-o" aria-hidden="true"></i> <span
-									class="pl-1">My wishlist</span> </a>
+							<a href="<?= base_url('/products/wishlist') ?>" class="single-icon"><i class="fa fa-heart-o"
+									aria-hidden="true"></i> <span class="pl-1">My wishlist</span> </a>
 						</div>
 						<div class="sinlge-bar">
 							<?php if (App\Libraries\CIAuth::id()): ?>
@@ -101,9 +103,11 @@
 
 							</a>
 
-							<!-- Shopping Item -->
+
+
+
 							<?php $cart = \Config\Services::cart(); ?>
-							<div class="shopping-item">
+							<!-- <div class="shopping-item">
 								<div class="dropdown-cart-header">
 									<span><?= $cart->totalItems() ?> Items</span>
 									<a href="<?= base_url('/cart') ?>">View Cart</a>
@@ -137,9 +141,9 @@
 									</div>
 									<a href="<?= base_url('/checkout') ?>" class="btn animate">Checkout</a>
 								</div>
-							</div>
+							</div> -->
 
-							<!--/ End Shopping Item -->
+
 						</div>
 
 					</div>
@@ -153,60 +157,24 @@
 			<div class="cat-nav-head">
 				<div class="row">
 					<div class="col-lg-4">
-						<div class="all-category">
-							<h3 class="cat-heading"><i class="fa fa-bars" aria-hidden="true"></i>SHOP BY CATEGORY</h3>
-							<!-- <ul class="main-category">
-									<li><a href="#">New Arrivals <i class="fa fa-angle-right" aria-hidden="true"></i></a>
-										<ul class="sub-category">
-											<li><a href="#">accessories</a></li>
-											<li><a href="#">best selling</a></li>
-											<li><a href="#">top 100 offer</a></li>
-										</ul>
-									</li>
-									<li class="main-mega"><a href="#">best selling <i class="fa fa-angle-right" aria-hidden="true"></i></a>
-										<ul class="mega-menu">
-											<li class="single-menu">
-												<a href="#" class="title-link">Shop Kid's</a>
-												<div class="image">
-													<img src="https://via.placeholder.com/225x155" alt="#">
-												</div>
-												<div class="inner-link">
-													<a href="#">Kids Toys</a>
-													<a href="#">Kids Travel Car</a>
-													<a href="#">Kids Color Shape</a>
-													<a href="#">Kids Tent</a>
-												</div>
-											</li>
-											<li class="single-menu">
-												<a href="#" class="title-link">Shop Men's</a>
-												<div class="image">
-													<img src="https://via.placeholder.com/225x155" alt="#">
-												</div>
-												<div class="inner-link">
-													<a href="#">Watch</a>
-													<a href="#">T-shirt</a>
-													<a href="#">Hoodies</a>
-													<a href="#">Formal Pant</a>
-												</div>
-											</li>
-											<li class="single-menu">
-												<a href="#" class="title-link">Shop Women's</a>
-												<div class="image">
-													<img src="https://via.placeholder.com/225x155" alt="#">
-												</div>
-												<div class="inner-link">
-													<a href="#">Ladies Shirt</a>
-													<a href="#">Ladies Frog</a>
-													<a href="#">Ladies Sun Glass</a>
-													<a href="#">Ladies Watch</a>
-												</div>
-											</li>
-										</ul>
-									</li>
-								
-									
-								</ul> -->
-						</div>
+						<ul class="nav main-menu menu navbar-nav">
+							<li class="active">
+								<a class="cat-heading" href="#"><i class="fa fa-bars" aria-hidden="true"></i>SHOP BY
+									CATEGORY<i class="ti-angle-down"></i></a>
+								<ul class="dropdown">
+									<?php foreach ($categories as $category): ?>
+										<li>
+											<a
+												href="<?= base_url('categories/category/' . $category['slug']) ?>"><?= esc($category['name']); ?></a>
+										</li>
+									<?php endforeach; ?>
+
+								</ul>
+							</li>
+
+
+
+						</ul>
 					</div>
 					<div class="col-lg-8 col-12">
 						<div class="menu-area">
@@ -287,6 +255,7 @@
 			dataType: 'json',
 			success: function (response) {
 				$('.total-count').text(response.totalItems);
+
 				$('.total-amount').text('$' + parseFloat(response.totalAmount).toFixed(2));
 
 				// Optionally, remove the item from the cart UI

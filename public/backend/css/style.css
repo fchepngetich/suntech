@@ -251,6 +251,7 @@ Version:1.0
 
 body {
     overflow-x: hidden;
+	background-color: #eee;
 }
 
 .header .nav li .submenu li a:hover{
@@ -269,7 +270,7 @@ body {
 
 .no-items p{color: #333 !important;}
 
-.content p{color: #333 !important;}
+.quantitys,.quantity,.content p{color: #333 !important;}
 .wishlist p{color: #333 !important;}
 .wishlist img{width:auto;height: 50px;}
 .wishlist.section {
@@ -282,7 +283,7 @@ body {
 .modal-content {
 	border-radius: 10px;
 	overflow: hidden;
-	max-width: 700px;
+	max-width: 650px;
 	margin: auto; 
 }
 
@@ -290,7 +291,7 @@ body {
 	background-color: #f8f9fa;
 	border-bottom: 1px solid #dee2e6;
 	display: flex;
-	justify-content: flex-end; /* Align close button to the right */
+	justify-content: flex-end; 
 }
 
 .modal-body {
@@ -347,7 +348,7 @@ body {
 	margin-top: 15px;
 	display: flex;
 	justify-content: space-between;
-	align-items: center; /* Center items vertically */
+	align-items: center; 
 	padding: 0 15px;
 }
 
@@ -356,11 +357,11 @@ body {
 }
 
 .checkout-btn {
-    float: left; /* Aligns to the left */
+    float: left; 
 }
 
 .continue-shopping-btn {
-    float: right; /* Aligns to the right */
+    float: right; 
 }
 
 .total {
@@ -378,18 +379,21 @@ body {
 }
 
 .continue-shopping-btn {
-	background-color: #28a745; /* Different color for continue shopping */
-	margin-left: 10px; /* Space between buttons */
+	background-color: #28a745; 
+	margin-left: 10px; 
 }
 /*******/
 
 .btn-danger {border-radius: 20px;}
+.row-title p.btn{
+	background-color: #75396b;
+}
 .btn {
 	position: relative;
 	font-weight: 500;
 	font-size:14px;
 	color: #fff !important;
-	background: #333;
+	background: #F7941D;
 	display: inline-block;
 	-webkit-transition: all 0.4s ease;
 	-moz-transition: all 0.4s ease;
@@ -402,7 +406,7 @@ body {
 }
 .btn:hover{
 	color:#fff;
-	background:#F7941D;
+	background:#FCBE00;
 }
 #scrollUp {
 	right: 10px;
@@ -877,7 +881,7 @@ body {
 }
 .header.shop .nice-select::after {
 	border-color: #666;
-	right: 20px;
+	right: 8px;
 }
 .header.shop .nice-select .list {
 	border-radius:0px;
@@ -918,7 +922,8 @@ body {
 	text-align: center;
 	font-size: 18px;
 	color: #fff;
-	background: #333333;
+	background: #FCBE00;
+
 	position: absolute;
 	right: -2px;
 	top: -1px;
@@ -1154,7 +1159,7 @@ body {
 	color: #fff;
 	text-transform: capitalize;
 	font-size: 15px;
-	padding: 20px 15px;
+	padding: 15px 15px;
 	font-weight: 500;
 	display: block;
 	position: relative;
@@ -1583,7 +1588,7 @@ body {
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
-    height: 400px;
+    height: 340px;
 	margin-top:30px;
 	position:relative;
 }
@@ -1614,7 +1619,7 @@ body {
 }
 
 .hero-area3 .small-content{
-	height:185px;
+	height:155px;
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -1991,7 +1996,7 @@ body {
 }
 /* Sinlge Product */
 .single-product{
-	margin-top:50px;
+	margin-top:5px;
 }
 .single-product .product-img {
   position: relative;
@@ -2153,6 +2158,7 @@ body {
 	-webkit-transition: all 250ms ease-out;
 	-o-transition: all 250ms ease-out;
 	transition: all 250ms ease-out;
+	border-top: 2px solid #333;
 }
 .single-product .product-img .product-action-2 a {
 	display: block;
@@ -2220,8 +2226,11 @@ body {
   line-height: 50px;
 }
 .single-product .product-content{
-	margin-top:20px;
+	margin:20px 0 5px 0;
 }
+.products{padding: 0 5px 0 0;}
+.recommended-row{padding: 0 14.6px;}
+.row-title{padding: 0 18px}
 .single-product .product-img:hover.default-overlay::before {
   background-color: rgba(38, 38, 38, 0.2);
   z-index: 9;
@@ -2870,7 +2879,7 @@ body {
 	background: #f7941d;
 	border-radius: 50%;
 }
-.shop.single .single-des p{}
+.shop-single p{color: #333 !important;}
 
 .shop.single .item-info {
 	width: 100%;
@@ -4081,7 +4090,7 @@ body {
 	text-transform: uppercase;
 }
 .shop-newsletter .newsletter-inner .btn:hover{
-	background:#333;
+	background:#FCBE00;
 	color:#fff;
 }
 /*======================================
@@ -4301,8 +4310,12 @@ body {
 	width:100%;
 }
 .shop-blog .shop-single-blog .content {
-	padding: 40px;
+	padding: 10px 5px;
 }
+.shop-blog .shop-single-blog .content {
+	text-align: justify;
+}
+
 .shop-blog .shop-single-blog .content .title {
 	font-size: 17px;
 	font-weight: 600;
@@ -4322,7 +4335,7 @@ body {
 	font-weight: 400;
 	color: #3c3c3c;
 	margin-top: 10px;
-	display: block;
+	text-align: right !important;
 }
 .shop-blog .shop-single-blog .content .more-btn:hover{
 	color:#F7941D;

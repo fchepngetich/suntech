@@ -17,28 +17,127 @@ class CategoryController extends BaseController
             $this->categoryModel = new CategoryModel();
         }
     
+       //administrator functions starts here
+
         public function index()
         {
-            $data['categories'] = $this->categoryModel->findAll();
-            return view('categories/index', $data);
+            $full_name='Faith';
+    
+            $categoryModel = new CategoryModel();
+            $categories = $categoryModel->findAll();
+            $data['full_name'] = $full_name;
+            $data['categories'] = $categories;
+
+
+            return view('admin/pages/categories/view', $data);
+        }
+        public function create()
+        {
+            $full_name='Faith';
+            $data['full_name'] = $full_name;
+
+            return view('admin/pages/categories/add',$data);
+        }
+    
+        public function store()
+{
+    $validation = $this->validate([
+        'name' => 'required|min_length[3]|max_length[255]',
+        'description' => 'permit_empty|max_length[1000]',
+    ]);
+
+    if (!$validation) {
+        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+    }
+
+    $categoryModel = new CategoryModel();
+
+    // Generate slug from the name
+    $slug = url_title($this->request->getPost('name'), '-', true);
+
+    $categoryModel->save([
+        'name' => $this->request->getPost('name'),
+        'description' => $this->request->getPost('description'),
+        'slug' => $slug, // Save the generated slug
+    ]);
+
+    return redirect()->to('/categories')->with('message', 'Category created successfully.');
+}
+
+    
+public function edit($slug)
+{
+    $full_name = 'Faith';
+    $data['full_name'] = $full_name;
+    
+    $categoryModel = new CategoryModel();
+    // Find category by slug instead of ID
+    $category = $categoryModel->where('slug', $slug)->first();
+
+    if (!$category) {
+        return redirect()->to(base_url( 'admin/categories'))->with('error', 'Category not found.');
+    }
+
+    // Combine category data with other data
+    $data['category'] = $category;
+
+    return view('admin/pages/categories/edit', $data);
+}
+
+
+    
+public function update($id)
+{
+    $validation = $this->validate([
+        'name' => 'required|min_length[3]|max_length[255]',
+        'description' => 'permit_empty|max_length[1000]',
+    ]);
+
+    if (!$validation) {
+        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+    }
+
+    $categoryModel = new CategoryModel();
+
+    // Generate slug from the updated name
+    $slug = url_title($this->request->getPost('name'), '-', true);
+
+    $categoryModel->update($id, [
+        'name' => $this->request->getPost('name'),
+        'description' => $this->request->getPost('description'),
+        'slug' => $slug, // Save the generated slug
+    ]);
+
+    return redirect()->to(base_url('admin/categories'))->with('message', 'Category updated successfully.');
+}
+
+    
+        public function delete($id)
+        {
+            $categoryModel = new CategoryModel();
+            $categoryModel->delete($id);
+    
+            return redirect()->to(base_url('/categories'))->with('message', 'Category deleted successfully.');
         }
 
+
+        //ends here
+
+
+        //Front end methods start here
         public function view($slug)
     {
         $categoryModel = new CategoryModel();
         $productModel = new ProductModel();
         
-        // Find the category by slug
         $category = $categoryModel->where('slug', $slug)->first();
         
         if (!$category) {
-            return redirect()->to('/'); // Redirect to homepage if category is not found
+            return redirect()->to('/'); 
         }
         $categories = $categoryModel->findAll();
-        // Fetch products that belong to the category
         $products = $productModel->where('category_id', $category['id'])->findAll();
         
-        // Pass category and products to the view
         return view('backend/pages/categories/category-details', [
             'category' => $category,
             'categories' => $categories,
@@ -47,41 +146,8 @@ class CategoryController extends BaseController
         ]);
     }
     
-        public function create()
-        {
-            return view('categories/create');
-        }
     
-        public function store()
-        {
-            $this->categoryModel->save([
-                'name' => $this->request->getPost('name'),
-                'description' => $this->request->getPost('description'),
-            ]);
-    
-            return redirect()->to(route_to('categories.index'))->with('success', 'Category added successfully.');
-        }
-    
-        public function edit($id)
-        {
-            $data['category'] = $this->categoryModel->find($id);
-            return view('categories/edit', $data);
-        }
-    
-        public function update($id)
-        {
-            $this->categoryModel->update($id, [
-                'name' => $this->request->getPost('name'),
-                'description' => $this->request->getPost('description'),
-            ]);
-    
-            return redirect()->to(route_to('categories.index'))->with('success', 'Category updated successfully.');
-        }
-    
-        public function delete($id)
-        {
-            $this->categoryModel->delete($id);
-            return redirect()->to(route_to('categories.index'))->with('success', 'Category deleted successfully.');
-        }
-    }
+   
+}
+
     

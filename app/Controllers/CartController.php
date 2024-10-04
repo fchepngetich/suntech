@@ -49,6 +49,32 @@ class CartController extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'An error occurred.']);
         }
     }
+
+    public function cartInfo() {
+        $cart = \Config\Services::cart();
+    
+        log_message('debug', 'Cart service initiated.');
+        
+        $totalItems = $cart->totalItems();
+        log_message('debug', 'Total items in cart: ' . $totalItems);
+    
+        $cartContents = $cart->contents();
+        log_message('debug', 'Cart contents: ' . json_encode($cartContents));
+        
+        $totalAmount = $cart->total();
+        log_message('debug', 'Cart total amount: ' . $totalAmount);
+    
+        $response = [
+            'totalItems'  => $totalItems,
+            'cartItems'   => view('backend/pages/cart/cart_items_partial', ['cartItems' => $cartContents]),
+            'totalAmount' => number_format($totalAmount, 2)
+        ];
+    
+        log_message('debug', 'Cart response: ' . json_encode($response));
+    
+        return $this->response->setJSON($response);
+    }
+    
     
     public function viewCart()
     {
@@ -88,39 +114,39 @@ class CartController extends BaseController
         }
     }
 
-//     public function update()
-// {
-//     $cart = \Config\Services::cart();
-
-//     $rowid = $this->request->getPost('rowid');
-//     $qty = $this->request->getPost('qty');
-
-//     if ($cart->update(['rowid' => $rowid, 'qty' => $qty])) {
-//         return $this->response->setJSON(['status' => 'success', 'message' => 'Cart updated successfully.']);
-//     } else {
-//         return $this->response->setJSON(['status' => 'error', 'message' => 'Failed to update cart.']);
-//     }
-// }
-
-public function update()
+    public function update()
 {
     $cart = \Config\Services::cart();
 
-    $rowid = $this->request->getPost('rowid');  // Ensure this is the correct row ID from the cart
+    $rowid = $this->request->getPost('rowid');  
     $qty = $this->request->getPost('qty');
 
-    // Log to check the rowid and quantity
     log_message('debug', 'Updating cart. Row ID: ' . $rowid . ', Quantity: ' . $qty);
 
-    // Validate the inputs
+    // Check if row ID and quantity are valid
     if (!$rowid || !$qty || $qty < 1) {
         log_message('error', 'Invalid row ID or quantity. Row ID: ' . $rowid . ', Quantity: ' . $qty);
         return $this->response->setJSON(['status' => 'error', 'message' => 'Invalid request.']);
     }
 
-    // Update the cart
+    // Log cart contents for debugging
+    $cartContents = $cart->contents();
+    log_message('debug', 'Cart Contents: ' . json_encode($cartContents));
+
+    // Check if the row ID exists in the cart
+    $cartItem = $cart->getItem($rowid); 
+    if (!$cartItem) {
+        log_message('error', 'No cart item found for Row ID: ' . $rowid);
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Cart item not found.']);
+    }
+
+    // Attempt to update the cart
     $updateStatus = $cart->update(['rowid' => $rowid, 'qty' => $qty]);
 
+    // Log the update status
+    log_message('debug', 'Cart update status: ' . json_encode($updateStatus));
+
+    // Check the result of the update
     if ($updateStatus) {
         log_message('debug', 'Cart updated successfully for Row ID: ' . $rowid);
         return $this->response->setJSON(['status' => 'success', 'message' => 'Cart updated successfully.']);
@@ -130,14 +156,38 @@ public function update()
     }
 }
 
+
+// public function update()
+// {
+//     $cart = \Config\Services::cart();
+
+//     $rowid = $this->request->getPost('rowid');  
+//     $qty = $this->request->getPost('qty');
+
+//     log_message('debug', 'Updating cart. Row ID: ' . $rowid . ', Quantity: ' . $qty);
+
+//     if (!$rowid || !$qty || $qty < 1) {
+//         log_message('error', 'Invalid row ID or quantity. Row ID: ' . $rowid . ', Quantity: ' . $qty);
+//         return $this->response->setJSON(['status' => 'error', 'message' => 'Invalid request.']);
+//     }
+
+//     $updateStatus = $cart->update(['rowid' => $rowid, 'qty' => $qty]);
+
+//     if ($updateStatus) {
+//         log_message('debug', 'Cart updated successfully for Row ID: ' . $rowid);
+//         return $this->response->setJSON(['status' => 'success', 'message' => 'Cart updated successfully.']);
+//     } else {
+//         log_message('error', 'Failed to update cart for Row ID: ' . $rowid);
+//         return $this->response->setJSON(['status' => 'error', 'message' => 'Failed to update cart.']);
+//     }
+// }
+
 public function getCartItems()
 {
     $cart = \Config\Services::cart();
     
-    // Fetch the cart items
     $cartContents = $cart->contents();
 
-    // If cart is empty, return empty cart response
     if (empty($cartContents)) {
         return $this->response->setJSON([
             'status' => 'success',
