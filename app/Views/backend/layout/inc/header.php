@@ -103,9 +103,6 @@
 
 							</a>
 
-
-
-
 							<?php $cart = \Config\Services::cart(); ?>
 							<!-- <div class="shopping-item">
 								<div class="dropdown-cart-header">
@@ -184,14 +181,12 @@
 									<div class="nav-inner">
 										<ul class="nav main-menu menu navbar-nav">
 											<?php foreach ($categories as $category): ?>
+
 												<li class="level0 nav-2 level-top parent">
 													<a href="<?= base_url('categories/category/' . $category['slug']) ?>"><?= $category['name'] ?><i
 															class="ti-angle-down"></i></a>
-
 													<ul class="level0 submenu">
 														<?php if (!empty($category['subcategories'])): ?>
-															<!-- If there are subcategories, display them -->
-															<!-- <li class="subcategory-title"><?= $category['name'] ?></li> -->
 															<div class="row">
 																<?php foreach ($category['subcategories'] as $subcategory): ?>
 																	<div class="col-md-6">
@@ -200,28 +195,23 @@
 																				href="<?= base_url('subcategories/subcategory/' . $subcategory['slug']) ?>">
 																				<strong><?= $subcategory['name'] ?></strong>
 																			</a>
-																			<!-- Subcategory Name -->
-																			<ul class="products-list">
-																				<!-- Display products under the subcategory -->
-																				<?php foreach ($subcategory['products'] as $product): ?>
-																					<li class="level2 nav-2-1-1">
-																						<a
-																							href="<?= base_url('admin/products/details/' . $product['slug']) ?>"><?= $product['name'] ?></a>
-																					</li>
-																				<?php endforeach; ?>
-																				<hr>
+																			<!-- Display subsubcategories under the subcategory -->
+																			<ul class="subsubcategories-list">
+																				<?php if (!empty($subcategory['subsubcategories'])): ?>
+
+																					<?php foreach ($subcategory['subsubcategories'] as $subsubcategory): ?>
+																						<li class="level2 nav-2-1-1">
+																							<a
+																								href="<?= base_url('admin/subsubcategories/details/' . $subsubcategory['slug']) ?>"><?= $subsubcategory['name'] ?></a>
+																						</li>
+																					<?php endforeach; ?>
+																				
+																				<?php endif; ?>
 																			</ul>
 																		</li>
 																	</div>
 																<?php endforeach; ?>
 															</div>
-
-														<?php else: ?>
-															<!-- If no subcategories, display products directly under the category -->
-															<?php foreach ($category['products'] as $product): ?>
-																<li class="level1 nav-2-2"><a href="#"><?= $product['name'] ?></a>
-																</li>
-															<?php endforeach; ?>
 														<?php endif; ?>
 													</ul>
 												</li>
@@ -230,11 +220,7 @@
 									</div>
 								</div>
 							</nav>
-							<!--/ End Main Menu -->
 						</div>
-
-
-
 
 					</div>
 				</div>

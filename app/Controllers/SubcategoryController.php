@@ -111,17 +111,14 @@ public function index()
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
     
-        // Generate slug from the name
         $newSlug = url_title($this->request->getPost('name'), '-', true);
         
-        // Fetch the existing subcategory
         $subcategory = $subcategoryModel->where('slug', $slug)->first();
     
         if (!$subcategory) {
             return redirect()->to(base_url('admin/subcategories'))->with('error', 'Subcategory not found.');
         }
     
-        // Check if the new slug is unique
         if ($newSlug !== $slug && $subcategoryModel->where('slug', $newSlug)->first()) {
             return redirect()->back()->withInput()->with('errors', ['slug' => 'The slug must be unique.']);
         }
@@ -132,7 +129,6 @@ public function index()
             'slug' => $newSlug,
         ];
         
-        // Update the subcategory using the ID of the found subcategory
         $subcategoryModel->update($subcategory['id'], $data);
     
         return redirect()->to(base_url('admin/subcategories'))->with('message', 'Subcategory updated successfully.');

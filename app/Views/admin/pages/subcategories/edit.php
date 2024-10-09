@@ -23,7 +23,8 @@
             </div>
         </div>
     </div>
-
+    <div class="card card-box">
+    <div class="card-body">
 <form action="<?= base_url('admin/subcategories/update/' . $subcategory['slug']) ?>" method="post">
     <?= csrf_field() ?>
     <div class="form-group">
@@ -45,7 +46,7 @@
 
     </span>
 </form>
-
+</div></div>
 
 </div>
 

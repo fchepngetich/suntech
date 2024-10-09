@@ -24,9 +24,17 @@
         </div>
     </div>
     <div class="row">
+        
         <div class="col-md-12">
             <div class="card card-box">
                 <div class="card-body">
+                <?php if (session()->getFlashdata('message') !== NULL): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?php echo session()->getFlashdata('message'); ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        </div>
+                    <?php endif; ?>
                     <table class="data-table table nowrap dataTable no-footer dtr-inline" id="products-table" role="grid">
                         <thead>
                             <tr role="row">
@@ -49,11 +57,13 @@
                                     <td><?= htmlspecialchars($product['stock']) ?></td>
 
                                     <td>
-                                        <div class="table-actions">
-                                            <a href="<?= base_url('admin/products/edit-product/'.$product['id']) ?>" class="btn edit-btn"><i class="icon-copy dw dw-edit2"></i></a>
-                                            <button type="button" class="delete-product-btn" data-id="<?= $product['id'] ?>" class="btn delete-btn"><i class="icon-copy dw dw-delete-3"></i></button>
-                                        </div>
-                                    </td>
+                    <a href="<?= base_url('admin/products/edit-product/'.$product['slug']) ?>" class="btn edit-btn">
+                        <i class="icon-copy dw dw-edit2"></i>
+                    </a>
+                    <a href="<?= base_url('admin/products/delete-product/'.$product['slug']) ?>" class="btn delete-btn" onclick="return confirm('Are you sure you want to delete this product?');">
+                        <i class="icon-copy dw dw-delete"></i>
+                    </a>
+                </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

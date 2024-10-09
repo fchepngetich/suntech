@@ -27,8 +27,13 @@
         <div class="col-md-12">
             <div class="card card-box">
                 <div class="card-body">
-                <?= session()->getFlashdata('message') ?>
-
+                <?php if (session()->getFlashdata('message') !== NULL): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?php echo session()->getFlashdata('message'); ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        </div>
+                    <?php endif; ?>
 <table class="table">
     <thead>
         <tr>
@@ -43,8 +48,8 @@
                 <td><?= esc($subcategory['name']) ?></td>
                 <td><?= esc($subcategory['category_name']) ?></td>
                 <td>
-                    <a href="<?= base_url('admin/subcategories/edit/' . $subcategory['slug']) ?>" class="btn btn-warning">Edit</a>
-                    <a href="<?= base_url('admin/subcategories/delete/' . $subcategory['slug']) ?>" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                    <a href="<?= base_url('admin/subcategories/edit/' . $subcategory['slug']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="<?= base_url('admin/subcategories/delete/' . $subcategory['slug']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
                 </td>
             </tr>
         <?php endforeach; ?>

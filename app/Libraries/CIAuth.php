@@ -27,7 +27,7 @@ class CIAuth{
         $session = session();
         if ($session->has('logged_in')){
             if($session->has('userdata')){
-                return $session->get('userdata')['full_name'];
+                return $session->get('userdata')['username'];
             }else{
                 return null;
             }

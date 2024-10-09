@@ -27,8 +27,13 @@
         <div class="col-md-12">
             <div class="card card-box">
                 <div class="card-body">
-                <?= session()->getFlashdata('message') ?>
-
+                <?php if (session()->getFlashdata('message') !== NULL): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?php echo session()->getFlashdata('message'); ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        </div>
+                    <?php endif; ?>
 <table class="table table-bordered">
     <thead>
         <tr>

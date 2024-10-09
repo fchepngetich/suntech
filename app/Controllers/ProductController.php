@@ -7,6 +7,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\ProductModel;
 use App\Models\CategoryModel;
 use App\Models\SubcategoryModel;
+use App\Models\SubsubcategoryModel;
 
 class ProductController extends BaseController
 {
@@ -84,66 +85,13 @@ public function getSubcategoriesByCategory($categoryId)
     $subcategories = $subcategoryModel->where('category_id', $categoryId)->findAll();
     return $this->response->setJSON($subcategories);
 }
+public function getSubsubcategoriesBysubCategory($subcategoryId)
+{
+    $subsubcategoryModel = new SubsubcategoryModel();
+    $subsubcategories = $subsubcategoryModel->where('subcategory_id', $subcategoryId)->findAll();
 
-
-// public function store()
-// {
-//     $validation = $this->validate([
-//         'name' => 'required|min_length[3]|max_length[255]',
-//         'description' => 'required|min_length[10]',
-//         'price' => 'required|decimal',
-//         'discounted_price' => 'permit_empty|decimal',
-//         'stock' => 'required|integer',
-//         'category_id' => 'required|integer',
-//         'subcategory_id' => 'required|integer',
-//         'image' => 'uploaded[image]|max_size[image,1024]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
-//         'sideview_images.*' => 'uploaded[sideview_images.*]|max_size[sideview_images.*,1024]|is_image[sideview_images.*]|mime_in[sideview_images.*,image/jpg,image/jpeg,image/png]',
-//     ]);
-
-//     if (!$validation) {
-//         return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-//     }
-
-//     $productModel = new ProductModel();
-
-//     // Handle main product image
-//     $imageFile = $this->request->getFile('image');
-//     $image = $imageFile->store(); // Store the image
-
-//     // Handle multiple sideview images
-//     $sideviewFiles = $this->request->getFiles()['sideview_images'];
-//     $sideviewImages = [];
-//     foreach ($sideviewFiles as $file) {
-//         if ($file->isValid() && !$file->hasMoved()) {
-//             $sideviewImages[] = $file->store(); // Store each image and add to array
-//         }
-//     }
-
-//     // Generate slug
-//     $slug = url_title($this->request->getPost('name'), '-', true);
-
-//     // Prepare data for insertion
-//     $data = [
-//         'name' => $this->request->getPost('name'),
-//         'description' => $this->request->getPost('description'),
-//         'features' => $this->request->getPost('features'),
-//         'price' => $this->request->getPost('price'),
-//         'discounted_price' => $this->request->getPost('discounted_price'),
-//         'stock' => $this->request->getPost('stock'),
-//         'category_id' => $this->request->getPost('category_id'),
-//         'subcategory_id' => $this->request->getPost('subcategory_id'),
-//         'image' => $image, // Main image
-//         'sideview_images' => json_encode($sideviewImages), // Store multiple images as JSON
-//         'is_top_deal' => $this->request->getPost('is_top_deal'),
-//         'is_recommended' => $this->request->getPost('is_recommended'),
-//         'slug' => $slug
-//     ];
-
-//     // Save product
-//     $productModel->save($data);
-
-//     return redirect()->to(base_url('admin/products'))->with('message', 'Product created successfully.');
-// }
+    return $this->response->setJSON($subsubcategories);
+}
 
 
 public function store()
@@ -156,7 +104,7 @@ public function store()
         'stock' => 'required|integer',
         'category_id' => 'required|integer',
         'subcategory_id' => 'required|integer',
-        'image' => 'uploaded[image]|max_size[image,2048]|ext_in[image,jpg,jpeg,png]',
+        'image' => 'uploaded[image]|max_size[image,2048]|is_image[image]|ext_in[image,jpg,jpeg,png]', // Modified validation rule
         'sideview_images' => 'permit_empty',
     ]);
 
@@ -164,30 +112,32 @@ public function store()
         log_message('error', 'Validation errors: ' . json_encode($this->validator->getErrors()));
         return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
+ $uploadPath = 'backend/images'; 
 
-    // Upload the main product image
-    $imageFile = $this->request->getFile('image');
-    if ($imageFile->isValid() && !$imageFile->hasMoved()) {
-        $imageName = $imageFile->getRandomName();
-        $imageFile->move(WRITEPATH . 'uploads/products/', $imageName);
-    } else {
-        log_message('error', 'Image upload failed: ' . json_encode($imageFile->getErrors()));
-    }
+ $imageFile = $this->request->getFile('image');
+ if ($imageFile->isValid() && !$imageFile->hasMoved()) {
+     $imageName = $imageFile->getClientName(); 
+     $imageFile->move($uploadPath, $imageName); 
+ } else {
+     log_message('error', 'Image upload failed: ' . json_encode($imageFile->getErrors()));
+ }
 
-    // Upload sideview images
-    $sideviewImages = [];
-    $sideviewFiles = $this->request->getFiles();
-    if (!empty($sideviewFiles['sideview_images'])) {
-        foreach ($sideviewFiles['sideview_images'] as $file) {
-            if ($file->isValid() && !$file->hasMoved()) {
-                $sideImageName = $file->getRandomName();
-                $file->move(WRITEPATH . 'uploads/products/', $sideImageName);
-                $sideviewImages[] = $sideImageName;
-            }
-        }
-    }
+ $sideviewImages = [];
+ $sideviewFiles = $this->request->getFiles();
+ if (!empty($sideviewFiles['sideview_images'])) {
+     foreach ($sideviewFiles['sideview_images'] as $file) {
+         if ($file->isValid() && !$file->hasMoved()) {
+             $sideImageName = $file->getClientName(); 
+             $file->move($uploadPath, $sideImageName); 
+             $sideviewImages[] = $sideImageName;
+         }
+     }
+ }
 
-    // Prepare data for the product model
+
+    $slug = url_title($this->request->getPost('name'), '-', true);
+    $slug = $this->generateUniqueSlug($slug); 
+
     $productData = [
         'name' => $this->request->getPost('name'),
         'description' => $this->request->getPost('description'),
@@ -197,77 +147,183 @@ public function store()
         'stock' => $this->request->getPost('stock'),
         'category_id' => $this->request->getPost('category_id'),
         'subcategory_id' => $this->request->getPost('subcategory_id'),
+        'subsubcategory_id' => $this->request->getPost('subsubcategory_id'),
         'image' => $imageName,
         'sideview_images' => json_encode($sideviewImages),
         'is_top_deal' => $this->request->getPost('is_top_deal') == '1',
         'is_recommended' => $this->request->getPost('is_recommended') == '1',
-        'slug' => url_title($this->request->getPost('name'), '-', true), // Auto-generate slug
+        'slug' => $slug,  
     ];
 
     log_message('info', 'Product Data: ' . json_encode($productData));
 
     $productsModel = new ProductModel();
-    $productsModel->save($productData);
+    
+    if (!$productsModel->save($productData)) {
+        log_message('error', 'Database error: ' . json_encode($productsModel->errors()));
+    }
 
     return redirect()->to(base_url('admin/products'))->with('message', 'Product created successfully.');
 }
 
 
-    public function edit($id)
-    {
-        $productModel = new ProductModel();
-        $data['product'] = $productModel->find($id);
 
-        return view('products/edit', $data);
+private function generateUniqueSlug($slug)
+{
+    $productsModel = new ProductModel();
+    $originalSlug = $slug;
+    $count = 1;
+
+    // Check if slug exists
+    while ($productsModel->where('slug', $slug)->first()) {
+        $slug = $originalSlug . '-' . $count;
+        $count++;
     }
 
-    public function update($id)
+    return $slug;
+}
+
+public function edit($slug)
+{
+    $full_name = 'Faith';
+    $productsModel = new ProductModel();
+    $product = $productsModel->where('slug', $slug)->first();
+
+    if (!$product) {
+        return redirect()->to(base_url('admin/products'))->with('error', 'Product not found.');
+    }
+
+    $categoriesModel = new CategoryModel();
+    $categories = $categoriesModel->findAll();
+
+    return view('admin/pages/products/edit', [
+        'product' => $product,
+        'categories' => $categories,
+        'full_name' => $full_name
+    ]);
+}
+
+
+    public function update($slug)
     {
         $validation = $this->validate([
             'name' => 'required|min_length[3]|max_length[255]',
-            'description' => 'required|min_length[10]',
-            'features' => 'permit_empty',
+            'description' => 'required',
             'price' => 'required|decimal',
+            'discounted_price' => 'permit_empty|decimal',
             'stock' => 'required|integer',
             'category_id' => 'required|integer',
             'subcategory_id' => 'required|integer',
-            'image' => 'permit_empty|uploaded[image]|max_size[image,1024]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
-            'is_top_deal' => 'permit_empty|in_list[0,1]',
-            'is_recommended' => 'permit_empty|in_list[0,1]',
-            'slug' => 'required|alpha_dash|is_unique[products.slug,id,{id}]'
+            'image' => 'permit_empty|uploaded[image]|max_size[image,2048]|is_image[image]|ext_in[image,jpg,jpeg,png]',
+            'sideview_images' => 'permit_empty',
         ]);
-
+    
         if (!$validation) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
+    
+        $productsModel = new ProductModel();
+        $product = $productsModel->where('slug', $slug)->first();
+    
+        if (!$product) {
+            return redirect()->to(base_url('admin/products'))->with('error', 'Product not found.');
+        }
+    
+        $uploadPath = 'backend/images'; 
+        $imageName = $product['image'];
 
-        $productModel = new ProductModel();
-        $data = [
+            // Handle main image removal
+    if ($this->request->getPost('remove_main_image')) {
+        if (file_exists('backend/images/' . $product['image'])) {
+            unlink('backend/images/' . $product['image']);
+        }
+        $product['image'] = null;  // Or set a default image
+    }
+
+    // Handle side view images removal
+    $sideviewImages = json_decode($product['sideview_images'], true);
+    $removeSideviewImages = $this->request->getPost('remove_sideview_images');
+    if ($removeSideviewImages) {
+        foreach ($removeSideviewImages as $index) {
+            if (isset($sideviewImages[$index])) {
+                if (file_exists('backend/images/' . $sideviewImages[$index])) {
+                    unlink('backend/images/' . $sideviewImages[$index]);
+                }
+                unset($sideviewImages[$index]);
+            }
+        }
+        $product['sideview_images'] = json_encode(array_values($sideviewImages)); // Reindex the array and save
+    }
+
+
+    
+        // Process image upload if new image is provided
+        $imageFile = $this->request->getFile('image');
+        if ($imageFile->isValid() && !$imageFile->hasMoved()) {
+            $imageName = $imageFile->getClientName(); 
+            $imageFile->move($uploadPath, $imageName);
+        }
+    
+        // Process sideview images
+        $sideviewImages = json_decode($product['sideview_images'], true) ?? [];
+        $sideviewFiles = $this->request->getFiles();
+    
+        if (!empty($sideviewFiles['sideview_images'])) {
+            foreach ($sideviewFiles['sideview_images'] as $file) {
+                if ($file->isValid() && !$file->hasMoved()) {
+                    $sideImageName = $file->getClientName(); 
+                    $file->move($uploadPath, $sideImageName); 
+                    $sideviewImages[] = $sideImageName;
+                }
+            }
+        }
+    
+        // Update slug if the name changes
+        $newSlug = url_title($this->request->getPost('name'), '-', true);
+        if ($this->request->getPost('name') !== $product['name']) {
+            $newSlug = $this->generateUniqueSlug($newSlug);
+        }
+    
+        // Prepare updated product data
+        $productData = [
             'name' => $this->request->getPost('name'),
             'description' => $this->request->getPost('description'),
             'features' => $this->request->getPost('features'),
             'price' => $this->request->getPost('price'),
+            'discounted_price' => $this->request->getPost('discounted_price'),
             'stock' => $this->request->getPost('stock'),
             'category_id' => $this->request->getPost('category_id'),
             'subcategory_id' => $this->request->getPost('subcategory_id'),
-            'image' => $this->request->getFile('image') ? $this->request->getFile('image')->store() : null,
-            'is_top_deal' => $this->request->getPost('is_top_deal'),
-            'is_recommended' => $this->request->getPost('is_recommended'),
-            'slug' => $this->request->getPost('slug')
+            'image' => $imageName,
+            'sideview_images' => json_encode($sideviewImages),
+            'is_top_deal' => $this->request->getPost('is_top_deal') == '1',
+            'is_recommended' => $this->request->getPost('is_recommended') == '1',
+            'slug' => $newSlug,
         ];
-
-        $productModel->update($id, $data);
-
-        return redirect()->to('/products')->with('message', 'Product updated successfully.');
+    
+        if (!$productsModel->update($product['id'], $productData)) {
+            return redirect()->back()->with('error', 'Failed to update the product.');
+        }
+    
+        return redirect()->to(base_url('admin/products'))->with('message', 'Product updated successfully.');
     }
+    
 
-    public function delete($id)
+    public function delete($slug)
     {
         $productModel = new ProductModel();
-        $productModel->delete($id);
-
-        return redirect()->to('/products')->with('message', 'Product deleted successfully.');
+    
+        $product = $productModel->where('slug', $slug)->first();
+    
+        if ($product) {
+            $productModel->delete($product['id']);
+    
+            return redirect()->to('admin/products')->with('message', 'Product deleted successfully.');
+        } else {
+            return redirect()->back()->with('errors', ['Product not found']);
+        }
     }
+    
 }
 
     

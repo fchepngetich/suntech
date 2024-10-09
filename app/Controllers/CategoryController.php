@@ -63,6 +63,9 @@ class CategoryController extends BaseController
 
     return redirect()->to('/categories')->with('message', 'Category created successfully.');
 }
+    
+   
+        
 
     
 public function edit($slug)

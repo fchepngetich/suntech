@@ -36,6 +36,13 @@ use CodeIgniter\Router\RouteCollection;
     $routes->post('store', 'ProductController::store', ['as' => 'products.store']);
     $routes->get('getSubcategoriesByCategory/(:num)', 'ProductController::getSubcategoriesByCategory/$1');
     $routes->get('getSubcategories/(:num)', 'ProductController::getSubcategoriesByCategory/$1');
+    $routes->get('getSubsubcategories/(:num)', 'ProductController::getSubsubcategoriesBysubCategory/$1');
+    $routes->get('edit-product/(:any)', 'ProductController::edit/$1');
+    $routes->post('update/(:any)', 'ProductController::update/$1');
+    $routes->get('delete-product/(:any)', 'ProductController::delete/$1');
+
+
+
 
     $routes->get('categories', 'CategoryController::index');
     $routes->get('categories/create', 'CategoryController::create');
@@ -66,10 +73,33 @@ $routes->post('update/(:any)', 'SubcategoryController::update/$1');
 $routes->get('delete/(:any)', 'SubcategoryController::delete/$1');
 
 });
+
+$routes->group('subsubcategories', ['filter' => 'cifilter:auth'], function($routes) {
+    $routes->get('/', 'SubsubcategoryController::index');
+    $routes->get('add-subsubcategory', 'SubsubcategoryController::create');  
+    $routes->post('create', 'SubsubcategoryController::store'); 
+    $routes->get('edit/(:any)', 'SubsubcategoryController::edit/$1'); 
+    $routes->post('edit/(:any)', 'SubsubcategoryController::update/$1'); 
+    $routes->get('delete/(:any)', 'SubsubcategoryController::delete/$1');
+    $routes->get('details/(:segment)', 'SubsubcategoryController::subsubcategoryItems/$1');
+
+
+
+    
+});
+
 });
 
 
 $routes->group('', static function ($routes) {
+$routes->get('admin/blogs', 'BlogController::index');
+$routes->get('admin/blogs/create', 'BlogController::create');
+$routes->post('admin/blogs/store', 'BlogController::store');
+$routes->get('admin/blogs/edit/(:num)', 'BlogController::edit/$1');
+$routes->post('admin/blogs/update/(:num)', 'BlogController::update/$1');
+$routes->get('admin/blogs/show/(:num)', 'BlogController::show/$1');
+$routes->delete('admin/blogs/delete/(:num)', 'BlogController::delete/$1');
+
     $routes->group('', static function ($routes) {
         $routes->get('/', 'Home::index');
         $routes->get('cart', 'CartController::viewCart');
@@ -87,6 +117,15 @@ $routes->group('', static function ($routes) {
         $routes->post('mpesa/initiate', 'MpesaController::initiatePayment');  // To initiate payment
         $routes->post('mpesa/callback', 'MpesaController::handleMpesaCallback');
         $routes->get('test', 'MpesaController::getAccessToken');
+        $routes->post('checkout/submitCheckoutForm', 'CheckoutController::submitCheckoutForm');
+
+$routes->post('/checkout/submitCheckoutForm', 'CheckoutController::submitCheckoutForm'); // Step 1: Save Delivery Address
+$routes->post('/checkout/saveDeliveryMethod', 'CheckoutController::saveDeliveryMethod'); // Step 2: Save Delivery Method
+$routes->post('/checkout/savePaymentMethod', 'CheckoutController::savePaymentMethod'); // Step 3: Save Payment Method
+$routes->post('/checkout/confirmOrder', 'CheckoutController::confirmOrder'); // Step 4: Confirm Order
+$routes->get('/checkout/success', 'CheckoutController::success'); // Redirect after order confirmation
+
+
 
         // To handle callback
         // $routes->post('cart/add/(:num)', 'CartController::add/$1'); // For adding items to the cart
@@ -103,10 +142,9 @@ $routes->get('cart/getCartItems', 'CartController::getCartItems'); // For fetchi
     });
     $routes->group('admin/products', static function ($routes) {
         $routes->get('details/(:any)', 'ProductController::details/$1');
-         // Save new product
-        $routes->get('edit/(:num)', 'ProductController::edit/$1', ['as' => 'products.edit']); // Show edit form
-        $routes->post('update/(:num)', 'ProductController::update/$1', ['as' => 'products.update']); // Update product
-        $routes->delete('delete/(:num)', 'ProductController::delete/$1', ['as' => 'products.delete']); // Delete product
+        $routes->get('edit/(:num)', 'ProductController::edit/$1', ['as' => 'products.edit']);
+        $routes->post('update/(:num)', 'ProductController::update/$1', ['as' => 'products.update']); 
+        $routes->delete('delete/(:num)', 'ProductController::delete/$1', ['as' => 'products.delete']); 
         $routes->post('wishlist/add', 'WishlistController::addToWishlist');
 
     });

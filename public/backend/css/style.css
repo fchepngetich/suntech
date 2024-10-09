@@ -3174,7 +3174,7 @@ body {
 }
 .shopping-cart {
 	background: #f6f6f6;
-	padding: 50px 0;
+	padding: 20px 0;
 }
 .shopping-summery thead .main-hading{
 	padding:0px 50px;
@@ -3195,8 +3195,8 @@ body {
 }
 .shopping-summery tbody tr img {
 	border-radius: 0;
-	width: 80px;
-	height: 80px;
+	width: 50px;
+	height: 50px;
 }
 .shopping-summery tbody tr:last-child{
 	border:none;
@@ -3236,7 +3236,7 @@ body {
 .shopping-cart .table td {
 	vertical-align: middle;
 	border-top: 1px solid #eee;
-	padding: 30px;
+	padding: 5px;
 }
 .shopping-summery tbody .price {
 	text-align: center;
@@ -3295,7 +3295,7 @@ body {
 	color:#F7941D;
 }
 .shopping-cart .total-amount{
-	margin-top:50px;
+	/* margin-top:50px; */
 }
 .shopping-cart .total-amount .left{}
 .shopping-cart .total-amount .left .coupon{}
@@ -3382,7 +3382,7 @@ body {
 	transform:scale(1);
 }
 .shopping-cart .total-amount .right {
-	padding-left: 100px;
+	/* padding-left: 100px; */
 }
 .shopping-cart .total-amount .right ul{
 	

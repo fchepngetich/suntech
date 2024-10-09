@@ -23,7 +23,8 @@
             </div>
         </div>
     </div>
-
+    <div class="card card-box">
+    <div class="card-body">
     <form action="<?= base_url('categories/store') ?>" method="post">
     <?= csrf_field() ?>
     <div class="form-group">
@@ -44,7 +45,7 @@
 
     <button type="submit" class="btn btn-primary">Create Category</button>
 </form>
-
+</div></div>
 </div>
 
 <?= $this->section('scripts') ?>

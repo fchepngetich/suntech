@@ -128,9 +128,9 @@
 
 <section class="recommended">
     <div class="container mt-5 mb-5">
-    <div class="row row-title">
-            <h4 class="title pl-3">Recommended For You</h4>
-            <p class="ml-5 btn">UNBEATABLE PRICES(QUARANTEED)</p>
+    <div class="row row-title mb-3">
+            <h4 class="title">Recommended For You</h4>
+            <p class="ml-5 btn btn-sm btn-info">UNBEATABLE PRICES(QUARANTEED)</p>
             <span class="ml-auto p-1"> <a class="btn btn-sm btn-info" href="">View All</a> </span>
         </div>
         <div class="row recommended-row">
@@ -141,8 +141,8 @@
                         <div class="product-img">
                             <a href="<?= base_url('admin/products/details/' . $product['slug']) ?>">
                                 <img class="default-img"
-                                    src="<?= base_url(relativePath: '/backend/' . $product['image']) ?>" alt="#">
-                                <img class="hover-img" src="<?= base_url(relativePath: '/backend/' . $product['image']) ?>"
+                                    src="<?= base_url(relativePath: '/backend/images/' . $product['image']) ?>" alt="#">
+                                <img class="hover-img" src="<?= base_url(relativePath: '/backend/images/' . $product['image']) ?>"
                                     alt="#">
                             </a>
                             <!-- <div class="button-head">
@@ -166,8 +166,8 @@
                                     href="<?= base_url('admin/products/details/' . $product['slug']) ?>"><?= $product['name'] ?></a>
                             </h3>
                             <div class="product-price">
-                                <span class="discounted-price">$<?= $product['price'] ?></span>
-                                <span class="original-price">$2000</span>
+                                <span class="discounted-price">$<?= $product['discounted_price'] ?></span>
+                                <span class="original-price">$<?= $product['price'] ?></span>
                             </div>
                             <hr class="line">
 
@@ -207,7 +207,7 @@
 <section>
     <div class="container mt-5 mb-4">
         <div class="row row-title">
-            <h4 class="title pl-3">Top Deals Of The Month</h4>
+            <h4 class="title">Top Deals Of The Month</h4>
             <span class="ml-auto"> <a class="btn btn-sm btn-info" href="">View All</a> </span>
         </div>
         <div class="row recommended-row">
@@ -215,12 +215,14 @@
                 <div class="col-xl-2 col-lg-3 col-md-4 col-12 products">
                     <div class="single-product card">
                         <div class="product-img">
-                            <a href="<?= base_url('admin/products/details/' . $product['slug']) ?>">
+                        <a href="<?= base_url('admin/products/details/' . $product['slug']) ?>">
                                 <img class="default-img"
-                                    src="<?= base_url(relativePath: '/backend/' . $product['image']) ?>" alt="#">
-                                <img class="hover-img" src="<?= base_url(relativePath: '/backend/' . $product['image']) ?>"
+                                    src="<?= base_url(relativePath: '/backend/images/' . $product['image']) ?>" alt="#">
+                                <img class="hover-img" src="<?= base_url(relativePath: '/backend/images/' . $product['image']) ?>"
                                     alt="#">
                             </a>
+
+
                             <div class="button-heaad">
                                 <!-- <div class="product-action">
                                     
@@ -238,8 +240,8 @@
                                     href="<?= base_url('admin/products/details/' . $product['slug']) ?>"><?= $product['name'] ?></a>
                             </h3>
                             <div class="product-price">
-                                <span class="discounted-price">$<?= $product['price'] ?></span>
-                                <span class="original-price">$2000</span>
+                                <span class="discounted-price">$<?= $product['discounted_price'] ?></span>
+                                <span class="original-price">$<?= $product['price'] ?></span>
                             </div>
                             <hr class="line">
 
@@ -270,48 +272,23 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-4 col-md-6 col-12">
-                <!-- Start Single Blog  -->
-                <div class="shop-single-blog">
-                    <img class="default-img" src="backend/images/insights1.png" alt="#">
+    <?php foreach ($blogs as $blog): ?>
+        <div class="col-lg-4 col-md-6 col-12">
+            <!-- Start Single Blog -->
+            <div class="shop-single-blog">
+                <img class="default-img" src="<?= base_url($blog['image']); ?>" alt="Blog Image">
 
-                    <!-- <img src="https://via.placeholder.com/370x300" alt="#"> -->
-                    <div class="content">
-                    <h6 class="">Interesting Facts About Solar Energy</h6>
-                    <p href="#" class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,
-                            magna eros eu erat. Aliquam er</p>
-                        <a href="#" class=" btn more-btn">Continue Reading</a>
-                    </div>
+                <div class="content">
+                    <h6 class=""><?= esc($blog['title']); ?></h6>
+                    <p class="text"><?= esc(substr($blog['description'], 0, 100)); ?>...</p>
+                    <a href="<?= base_url('/blogs/show/' . $blog['id']); ?>" class="btn more-btn">Continue Reading</a>
                 </div>
-                <!-- End Single Blog  -->
             </div>
-            <div class="col-lg-4 col-md-6 col-12">
-                <!-- Start Single Blog  -->
-                <div class="shop-single-blog">
-                    <img class="default-img" src="backend/images/insights2.png" alt="#">
-                    <div class="content">
-                    <h6 class="">Interesting Facts About Solar Energy</h6>
-                    <p href="#" class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,
-                            magna eros eu erat. Aliquam er</p>
-                        <a href="#" class="btn more-btn">Continue Reading</a>
-                    </div>
-                </div>
-                <!-- End Single Blog  -->
-            </div>
-            <div class="col-lg-4 col-md-6 col-12">
-                <!-- Start Single Blog  -->
-                <div class="shop-single-blog">
-                    <img class="default-img" src="backend/images/insights3.png" alt="#">
-                    <div class="content">
-                        <h6 class="">Interesting Facts About Solar Energy</h6>
-                        <p href="#" class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,
-                            magna eros eu erat. Aliquam er</p>
-                        <a href="#" class="btn more-btn">Continue Reading</a>
-                    </div>
-                </div>
-                <!-- End Single Blog  -->
-            </div>
+            <!-- End Single Blog -->
         </div>
+    <?php endforeach; ?>
+</div>
+
     </div>
 </section>
 <!-- End Shop Blog  -->

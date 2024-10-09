@@ -11,39 +11,41 @@ class CategoryModel extends Model
     protected $allowedFields = ['name', 'description','slug'];
  
     public function getCategoriesWithSubcategoriesAndProducts()
-    {
-        $categories = $this->db->table('categories')
-                               ->select('id, name,slug')
-                               ->get()
-                               ->getResultArray();
+{
+    $categories = $this->db->table('categories')
+                           ->select('id, name, slug')
+                           ->get()
+                           ->getResultArray();
 
-        foreach ($categories as &$category) {
-            $subcategories = $this->db->table('subcategories')
-                                      ->select('id, ,slug,name')
-                                      ->where('category_id', $category['id'])
-                                      ->get()
-                                      ->getResultArray();
+    foreach ($categories as &$category) {
+        $subcategories = $this->db->table('subcategories')
+                                  ->select('id, slug, name')
+                                  ->where('category_id', $category['id'])
+                                  ->get()
+                                  ->getResultArray();
 
-            if (!empty($subcategories)) {
-                foreach ($subcategories as &$subcategory) {
-                    $subcategory['products'] = $this->db->table('products')
-                                                        ->select('name,slug',)
-                                                        ->where('subcategory_id', $subcategory['id'])
-                                                        ->get()
-                                                        ->getResultArray();
-                }
-                $category['subcategories'] = $subcategories;
-            } else {
-                $category['products'] = $this->db->table('products')
-                                                 ->select('name,slug',)
-                                                 ->where('category_id', $category['id'])
-                                                 ->get()
-                                                 ->getResultArray();
+        if (!empty($subcategories)) {
+            foreach ($subcategories as &$subcategory) {
+                $subsubcategoryModel = $this->db->table('subsubcategories')
+                                                ->select('name, slug')
+                                                ->where('subcategory_id', $subcategory['id'])
+                                                ->get()
+                                                ->getResultArray();
+                $subcategory['subsubcategories'] = $subsubcategoryModel;
             }
+            $category['subcategories'] = $subcategories;
+        } else {
+            $category['products'] = $this->db->table('products')
+                                             ->select('name, slug')
+                                             ->where('category_id', $category['id'])
+                                             ->get()
+                                             ->getResultArray();
         }
-
-        return $categories;
     }
+
+    return $categories;
+}
+
 }
 
 

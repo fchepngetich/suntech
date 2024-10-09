@@ -34,6 +34,18 @@
 							<span class="micon dw dw-user"></span><span class="mtext">SubCategories</span>
 						</a>
 					</li>
+
+					<li>
+						<a href="<?= base_url('/admin/subsubcategories') ?>" class="dropdown-toggle no-arrow">
+							<span class="micon dw dw-user"></span><span class="mtext">SubsubCategories</span>
+						</a>
+					</li>
+
+					<li>
+						<a href="<?= base_url('/admin/blogs') ?>" class="dropdown-toggle no-arrow">
+							<span class="micon dw dw-user"></span><span class="mtext">Blogs</span>
+						</a>
+					</li>
 				
 
 					<li>

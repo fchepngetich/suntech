@@ -57,7 +57,7 @@
                                 <div class="single-product">
                                     <div class="product-img">
                                         <a href="<?= base_url('admin/products/details/' . $product['slug']); ?>">
-                                            <img class="default-img" src="<?= base_url('backend/' . $product['image']); ?>" alt="<?= esc($product['name']); ?>">
+                                            <img class="default-img" src="<?= base_url('backend/images/' . $product['image']); ?>" alt="<?= esc($product['name']); ?>">
                                         </a>
                                         <div class="button-head">
                                             <div class="product-action">

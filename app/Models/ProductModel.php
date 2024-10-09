@@ -9,16 +9,17 @@ class ProductModel extends Model
     protected $table            = 'products';
     protected $primaryKey       = 'id';
 
-    protected $allowedFields = ['name', 'description','features','discounted-price', 'price', 'stock', 'category_id','subcategory_id', 'image','sideview_images', 'is_top_deal', 'is_recommended','slug'];
+    protected $allowedFields = ['name', 'description','features','discounted_price', 
+    'price', 'stock', 'category_id','subcategory_id', 'subsubcategory_id', 'image',
+    'sideview_images', 'is_top_deal', 'is_recommended','slug'];
 
  // Validation rules
  protected $validationRules = [
-    'name'        => 'required|min_length[3]|max_length[255]',
+    'name'        => 'required',
     'description' => 'required',
     'price'       => 'required|numeric|greater_than[0]',
     'stock'       => 'required|integer|greater_than_equal_to[0]',
     'category_id' => 'required|integer',
-    'image'       => 'permit_empty|valid_url',
 ];
 
 // Generate slug from product name
@@ -39,15 +40,22 @@ protected function createSlug(array $data)
     return $data;
 }
 
-    public function getTopDeals()
-    {
-        return $this->where('is_top_deal', 1)->limit(6)->findAll();
-    }
-    
-    public function getRecommendedProducts()
-    {
-        return $this->where('is_recommended', 1)->limit(6)->findAll();
-    }
+public function getTopDeals()
+{
+    return $this->where('is_top_deal', 1)
+                ->orderBy('created_at', 'DESC') // Order by latest first
+                ->limit(6)
+                ->findAll();
+}
+
+public function getRecommendedProducts()
+{
+    return $this->where('is_recommended', 1)
+                ->orderBy('created_at', 'DESC') // Order by latest first
+                ->limit(6)
+                ->findAll();
+}
+
     
    
 }

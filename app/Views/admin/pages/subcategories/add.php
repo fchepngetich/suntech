@@ -23,7 +23,8 @@
             </div>
         </div>
     </div>
-
+    <div class="card card-box">
+    <div class="card-body">
 <form action="<?= base_url('admin/subcategories/store') ?>" method="post">
     <?= csrf_field() ?>
     <div class="form-group">
@@ -43,7 +44,7 @@
     <span><a href="<?= base_url('admin/subcategories') ?>" class="btn btn-secondary">Cancel</a>
     </span>
 </form>
-
+</div></div>
 
 </div>
 
