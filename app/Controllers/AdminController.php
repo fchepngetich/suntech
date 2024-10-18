@@ -8,7 +8,7 @@ use App\Libraries\CIAuth;
 use App\Models\Tickets;
 use App\Models\Subcategory;
 use App\Models\Replies;
-use App\Models\User;
+use App\Models\UserModel;
 use App\Models\Roles;
 use App\Models\Categories;
 
@@ -28,7 +28,7 @@ class AdminController extends BaseController
 
     public function forgotPassword()
     {
-        $usermodel = new User();
+        $usermodel = new UserModel();
 
     }
     public function default(){
@@ -63,196 +63,9 @@ class AdminController extends BaseController
             'full_name' => $full_name
         ]);
     }*/
-    public function myTickets()
-    {
-        $ticketModel = new Tickets();
-        $repliesModel = new Replies();
-        $userModel = new User();
-        $full_name = CIAuth::fullName();
-        $loggedInUserId = CIAuth::id();
-
-        $tickets = $ticketModel->where('user_id', $loggedInUserId)->findAll();
-        $replies = $repliesModel->findAll();
-
-        return view('backend/pages/my-tickets', [
-            'tickets' => $tickets,
-            'replies' => $replies,
-            'userModel' => $userModel,
-            'full_name' => $full_name
-        ]);
-    }
-    
-   public function search()
-{
-    $title = $this->request->getPost('title');
-    $start_date = $this->request->getPost('start_date');
-    $end_date = $this->request->getPost('end_date');
-    $status = $this->request->getPost('status');
-
-    $ticketModel = new Tickets();
-    $repliesModel = new Replies();
-    $userModel = new User();
-    $full_name = CIAuth::fullName();
-    $loggedInUserId = CIAuth::id();
-
-    $replies = $repliesModel->findAll();
-
-    $query = $ticketModel->select('*');
-
-    if (!empty($title)) {
-        $query->like('subject', $title);
-    }
-
-    if (!empty($start_date)) {
-        $query->where('created_at >=', $start_date . ' 00:00:00');
-    }
-
-    if (!empty($end_date)) {
-        $query->where('created_at <=', $end_date . ' 23:59:59');
-    }
-
-    if (!empty($status)) {
-        $query->where('status', $status);
-    }
-
-    $tickets = $query->findAll();
-
-    return view('backend/pages/home', [
-        'tickets' => $tickets,
-        'replies' => $replies,
-        'userModel' => $userModel,
-        'full_name' => $full_name,
-        'subject' => $title,
-        'start_date' => $start_date,
-        'end_date' => $end_date,
-        'status' => $status
-    ]);
-}
- 
-public function searchTicketsInCategories()
-{
-    $request = \Config\Services::request();
-    $ticketModel = new Tickets();
-    $categoryModel = new Categories();
-    
-    $replyModel = new Replies();
-
-    $replies = $replyModel->findAll();
-    $full_name = CIAuth::fullName();
-    
-    $title = $request->getPost('title');
-    $startDate = $request->getPost('start_date');
-    $endDate = $request->getPost('end_date');
-    $status = $request->getPost('status');
-    $categoryId = $request->getPost('category_id');
-    
-    $data['category'] = $categoryModel->find($categoryId);
-    if (!$data['category']) {
-        throw new \CodeIgniter\Exceptions\PageNotFoundException('Category not found');
-    }
-    
-    $query = $ticketModel->where('category_id', $categoryId);
-
-    if ($title) {
-        $query->like('subject', $title);
-    }
-
-    if ($startDate) {
-        $query->where('created_at >=', $startDate);
-    }
-
-    if ($endDate) {
-        $query->where('created_at <=', $endDate);
-    }
-
-    if ($status) {
-        $query->where('status', $status);
-    }
-
-    $data['tickets'] = $query->findAll();
-    
-    $data['title'] = $title;
-    $data['start_date'] = $startDate;
-    $data['end_date'] = $endDate;
-    $data['status'] = $status;
-    $data['category_id'] = $categoryId;
-    $data['replies'] = $replies;
-    $data['full_name'] = $full_name;
 
 
-    
-    return view('backend/pages/categories/tickets', $data);
-}
-
-
-
-   public function searchMyTickets()
-{
-    $title = $this->request->getPost('title');
-    $start_date = $this->request->getPost('start_date');
-    $end_date = $this->request->getPost('end_date');
-    $status = $this->request->getPost('status');
-
-    $ticketModel = new Tickets();
-    $repliesModel = new Replies();
-    $userModel = new User();
-    $full_name = CIAuth::fullName();
-    $loggedInUserId = CIAuth::id();
-
-    $replies = $repliesModel->findAll();
-
-$loggedInUserId = CIAuth::id();
-
-
-$query = $ticketModel->select('*')->where('user_id', $loggedInUserId);
-
-    if (!empty($title)) {
-        $query->like('subject', $title);
-    }
-
-    if (!empty($start_date)) {
-        $query->where('created_at >=', $start_date . ' 00:00:00');
-    }
-
-    if (!empty($end_date)) {
-        $query->where('created_at <=', $end_date . ' 23:59:59');
-    }
-
-    if (!empty($status)) {
-        $query->where('status', $status);
-    }
-
-    $tickets = $query->findAll();
-
-    return view('backend/pages/my-tickets', [
-        'tickets' => $tickets,
-        'replies' => $replies,
-        'userModel' => $userModel,
-        'full_name' => $full_name,
-        'subject' => $title,
-        'start_date' => $start_date,
-        'end_date' => $end_date,
-        'status' => $status
-    ]);
-}
-
-    public function displayReplies($ticketId)
-    {
-        $repliesModel = new Replies();
-        $userModel = new User();
-        $full_name = CIAuth::fullName();
-
-
-        $replies = $repliesModel->getTicketReplies($ticketId);
-
-        return view('backend/pages/home', [
-            'replies' => $replies,
-            'userModel' => $userModel,
-            'ticketId' => $ticketId,
-            'full_name' => $full_name
-
-        ]);
-    }
+  
    public function logoutHandler()
 {
     CIAuth::forget();
@@ -260,69 +73,6 @@ $query = $ticketModel->select('*')->where('user_id', $loggedInUserId);
 }
 
 
-    public function tickets()
-    {
-        $ticketModel = new Tickets();
-        $full_name = CIAuth::fullName();
-
-        $data['full_name'] = $full_name;
-
-        $data['tickets'] = $ticketModel->findAll();
-        return view('backend/pages/home', $data);
-    }
-    
-    public function viewTicketsByCategory($categoryId)
-{
-    $ticketModel = new Tickets();
-    $categoryModel = new Categories();
-    $replyModel = new Replies();
-
-    $replies = $replyModel->findAll();
-   
-
-    $data['category'] = $categoryModel->find($categoryId);
-    
-    if (!$data['category']) {
-        throw new \CodeIgniter\Exceptions\PageNotFoundException('Category not found');
-    }
-    $ticketModel->where('category_id', $categoryId)->set('read_status', 1)->update();
-
-    $categoryModel->update($categoryId, ['unread_count' => 0]);
-
-
-    $data['tickets'] = $ticketModel->where('category_id', $categoryId)->findAll();
-    $data['full_name'] = CIAuth::fullName();
-    $data['replies'] = $replies;
-
-    return view('backend/pages/categories/tickets', $data);
-}
-
-    
-    public function viewTicket($id)
-{
-    $ticketModel = new \App\Models\Tickets();
-    $replyModel = new \App\Models\Replies();
-    $userModel = new User();
-    $full_name = CIAuth::fullName();
-
-
-
-    $ticket = $ticketModel->find($id);
-    $replies = $replyModel->where('ticket_id', $id)->findAll();
-
-    if (!$ticket) {
-        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-    }
-
-    return view('backend/pages/ticket-details', [
-        'ticket' => $ticket,
-        'replies' => $replies,
-        'userModel' => $userModel,
-        'full_name' => $full_name
-
-
-    ]);
-}
 
     public function getUsers()
     {

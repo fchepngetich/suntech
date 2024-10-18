@@ -9,6 +9,7 @@ use App\Models\SubsubcategoryModel;
 use App\Models\SubcategoryModel;
 use App\Models\CategoryModel;
 use App\Models\ProductModel;
+use App\Models\BlogModel;
 
 class SubsubcategoryController extends BaseController
 {
@@ -158,27 +159,57 @@ class SubsubcategoryController extends BaseController
 
 
  public function subsubcategoryItems($slug)
-{
-    $subsubcategoryModel = new SubsubcategoryModel();
-    $itemModel = new ProductModel();
-    $categoryModel = new CategoryModel();
+ {
+     $subsubcategoryModel = new SubsubcategoryModel();
+     $itemModel = new ProductModel();
+     $categoryModel = new CategoryModel();
+     $subcategoryModel = new SubcategoryModel();
+     $blogModel = new BlogModel();
+ 
+     $blogs = $blogModel->orderBy('created_at', 'DESC')->limit(3)->find(); 
+ 
+     $subsubcategory = $subsubcategoryModel->where('slug', $slug)->first();
+ 
+     if (!$subsubcategory) {
+         log_message('error', 'Subsubcategory not found: ' . $slug);
+         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+     }
+ 
+     $subcategory = $subcategoryModel->find($subsubcategory['subcategory_id']);
+ 
+     if (!$subcategory) {
+         log_message('error', 'Subcategory not found for subsubcategory: ' . $slug);
+         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+     }
+ 
+     $category = $categoryModel->find($subcategory['category_id']);
+ 
+  
+     if (!$category) {
+         log_message('error', 'Category not found for subcategory: ' . $subcategory['slug']);
+         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+     }
+ 
 
-    $categories = $categoryModel->findAll();
-    $subsubcategory = $subsubcategoryModel->where('slug', $slug)->first();
-
-    if (!$subsubcategory) {
-        log_message('error', 'Subsubcategory not found: ' . $slug);
-        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-    }
-
-    $products = $itemModel->where('subsubcategory_id', $subsubcategory['id'])->findAll();
-
-    return view('backend/pages/subsubcategories/subsubcategory-details', [
-        'subsubcategory' => $subsubcategory,
-        'categories' => $categories,
-        'products' => $products
-    ]);
-}
+     $breadcrumbs = [
+         ['url' => base_url(), 'name' => 'Home'], 
+         ['url' => base_url('categories/category/' . $category['slug']), 'name' => $category['name']], // Corrected category link
+         ['url' => base_url('subcategories/subcategory/' . $subcategory['slug']), 'name' => $subcategory['name']], // Corrected subcategory link
+         ['url' => '', 'name' => $subsubcategory['name']],
+     ];
+     
+    
+     $products = $itemModel->where('subsubcategory_id', $subsubcategory['id'])->findAll();
+ 
+     return view('backend/pages/subsubcategories/subsubcategory-details', [
+         'subsubcategory' => $subsubcategory,
+         'subcategories' => $subcategoryModel->findAll(), 
+         'products' => $products,
+         'blogs' => $blogs,
+         'breadcrumbs' => $breadcrumbs,
+     ]);
+ }
+ 
 
 
 

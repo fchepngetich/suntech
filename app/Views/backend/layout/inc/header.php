@@ -42,42 +42,37 @@
 					</div>
 
 					<!--/ End Logo -->
-					<!-- Search Form -->
-					<div class="search-top">
-						<div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
-						<!-- Search Form -->
-						<div class="search-top">
-							<form class="search-form">
-								<input type="text" placeholder="Search here..." name="search">
-								<button value="search" type="submit"><i class="ti-search"></i></button>
-							</form>
-						</div>
-						<!--/ End Search Form -->
-					</div>
+
 					<!--/ End Search Form -->
 					<div class="mobile-nav"></div>
 				</div>
-				<div class="col-lg-5 col-md-7 col-12">
+				<div class="col-lg-6 col-md-7 col-12">
 					<div class="search-bar-top">
 						<div class="search-bar">
-							<form action="<?= base_url('search'); ?>" method="GET">
-								<!-- Add action and method for form submission -->
-								<select name="category"> <!-- Add name attribute for the select -->
-									<option value="">Select Category</option> <!-- Placeholder option -->
-									<!-- Dynamically Loop through Categories -->
-									<?php foreach ($categories as $category): ?>
-										<option value="<?= $category['slug']; ?>"><?= esc($category['name']); ?></option>
+							<form action="<?= base_url('search/suggestions'); ?>" method="POST">
+								<select name="category" class="form-control">
+									<option value="">Select Category</option>
+									<?php foreach ($categories as $cat): ?>
+										<option value="<?= esc($cat['slug']); ?>" <?= (isset($category) && $cat['slug'] === $category) ? 'selected' : ''; ?>>
+											<?= esc($cat['name']); ?>
+										</option>
 									<?php endforeach; ?>
 								</select>
-								<input name="search" placeholder="Search Products" type="search">
-								<button class="btnn" type="submit"><i class="ti-search"></i></button>
-								<!-- Added type="submit" -->
+
+
+								<input name="search" value="<?= isset($search) ? esc($search) : ''; ?>"
+									placeholder="Search Products" type="search" class="form-control mr-2">
+								<button class="btnn" type="submit">
+									<i class="ti-search"></i>
+								</button>
 							</form>
+
+
 						</div>
 					</div>
 
 				</div>
-				<div class="col-lg-5 col-md-3 col-12">
+				<div class="col-lg-4 col-md-3 col-12">
 					<div class="right-bar">
 						<!-- Search Form -->
 						<div class="sinlge-bar">
@@ -85,13 +80,18 @@
 									aria-hidden="true"></i> <span class="pl-1">My wishlist</span> </a>
 						</div>
 						<div class="sinlge-bar">
-							<?php if (App\Libraries\CIAuth::id()): ?>
-								<a href="<?= base_url('/logout') ?>" class="single-icon"><i class="fa fa-user-circle-o"
-										aria-hidden="true"></i> <span class="pl-1">Logout</span></a>
+							<?php if (session()->has('logged_in') && session()->get('logged_in')): ?>
+								<a href="<?= base_url('/logout') ?>" class="single-icon">
+									<i class="fa fa-user-circle-o" aria-hidden="true"></i>
+									<span class="pl-1">Logout</span>
+								</a>
 							<?php else: ?>
-								<a href="<?= base_url('/login') ?>" class="single-icon"><i class="fa fa-user-circle-o"
-										aria-hidden="true"></i> <span class="pl-1">My Account</span></a>
-							<?php endif ?>
+								<a href="<?= base_url('/login') ?>" class="single-icon">
+									<i class="fa fa-user-circle-o" aria-hidden="true"></i>
+									<span class="pl-1">My Account</span>
+								</a>
+							<?php endif; ?>
+
 
 						</div>
 						<div class="sinlge-bar shopping">
@@ -202,10 +202,10 @@
 																					<?php foreach ($subcategory['subsubcategories'] as $subsubcategory): ?>
 																						<li class="level2 nav-2-1-1">
 																							<a
-																								href="<?= base_url('admin/subsubcategories/details/' . $subsubcategory['slug']) ?>"><?= $subsubcategory['name'] ?></a>
+																								href="<?= base_url('subsubcategories/details/' . $subsubcategory['slug']) ?>"><?= $subsubcategory['name'] ?></a>
 																						</li>
 																					<?php endforeach; ?>
-																				
+
 																				<?php endif; ?>
 																			</ul>
 																		</li>
@@ -232,8 +232,14 @@
 <?= $this->section('scripts') ?>
 <script>
 
+	document.querySelector('form').addEventListener('submit', function (e) {
+		console.log('Form is submitting...');  // Check if this logs
+	});
+
+
+
 	$(document).on('click', '.remove', function (e) {
-		e.preventDefault();
+		//e.preventDefault();
 		var rowid = $(this).data('id');
 		$.ajax({
 			url: '/cart/remove/' + rowid,
@@ -254,6 +260,5 @@
 	});
 </script>
 
-</script>
 
 <?= $this->endSection() ?>

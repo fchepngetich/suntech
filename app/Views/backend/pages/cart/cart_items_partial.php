@@ -1,3 +1,4 @@
+<?php   $currency = getenv('CURRENCY') ?? 'Ksh';?>
 <div class="shopping-items">
                     <div class="dropdown-cart-header">
                         <?php $cart = \Config\Services::cart(); ?>
@@ -25,7 +26,7 @@
                                         <div class="col-md-3">
                                             <div>
                                                 <h4>
-                                                    <a href="#">$<?= esc($item['price']) ?></a>
+                                                    <a href="#"><?= esc($currency) ?><?= esc($item['price']) ?></a>
                                                     <!-- Display quantity here -->
                                                 </h4>
                                             </div>
@@ -53,7 +54,7 @@
                         </div>
                         <div class="total">
                             <span>Total</span>
-                            <span class="total-amount">$<?= number_format($cart->total(), 2) ?></span>
+                            <span class="total-amount"><?= esc($currency) ?><?= number_format($cart->total(), 2) ?></span>
                         </div>
 
                     </div>

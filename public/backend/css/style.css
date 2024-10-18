@@ -178,19 +178,36 @@ Version:1.0
 /* End Preloader */
 
 
-/* Main Menu Styling */
+
+.breadcrumb-item a {
+    font-size: 0.775rem; 
+}
+
+.breadcrumb-item.last-breadcrumb {
+    text-decoration: underline;
+    color: #F7941D; 
+    font-size: 0.775rem; 
+}
+
+.breadcrumb-item.active {
+	text-decoration: underline;
+    color: #F7941D; 
+    font-size: 0.775rem; 
+}
+.breadcrumb{background-color: none !important;}
+
+
 .nav.main-menu.menu > li {
-    position: initial; /* Ensure submenu is positioned relative to the parent */
+    position: initial; 
 }
 
 .nav.main-menu.menu > li > a {
     display: block;
-    padding: 10px 15px; /* Adjust padding as necessary */
-    color: #333; /* Customize text color */
+    padding: 10px 15px; 
+    color: #333; 
     text-decoration: none;
 }
 
-/* Submenu Styling */
 .nav.main-menu.menu > li > ul.submenu {
     position: absolute;
     top: 100%;
@@ -277,13 +294,84 @@ body {
 	padding: 50px 0;
 	position: relative;
 }
+/* General Modal Styling */
+#mpesaModal .modal-content {
+    border-radius: 10px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+#mpesaModal .modal-header {
+    background-color: #F7941D;
+    color: #fff;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+}
+
+#mpesaModal .modal-header .modal-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#mpesaModal .modal-header .close {
+    color: #fff;
+    font-size: 24px;
+    opacity: 1;
+}
+
+#mpesaModal .modal-body {
+    padding: 20px;
+}
+
+#mpesaModal .modal-body .form-group {
+    margin-bottom: 15px;
+}
+
+#mpesaModal .input-group-text {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+}
+
+#mpesaModal .form-control {
+    border-color: #ced4da;
+    border-radius: 0.25rem;
+    box-shadow: none;
+}
+
+#mpesaModal .btn-primary {
+    
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out;
+}
+
+
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    #mpesaModal .modal-dialog {
+        margin: 20px auto;
+    }
+
+    #mpesaModal .modal-header, #mpesaModal .modal-body {
+        padding: 15px;
+    }
+
+    #mpesaModal .modal-header .modal-title {
+        font-size: 16px;
+    }
+
+    #mpesaModal .btn-primary {
+        font-size: 14px;
+    }
+}
 
 
 /******carttttt***/
 .modal-content {
 	border-radius: 10px;
 	overflow: hidden;
-	max-width: 650px;
+	max-width: 300px;
 	margin: auto; 
 }
 
@@ -406,6 +494,29 @@ body {
 }
 .btn:hover{
 	color:#fff;
+	background:#FCBE00;
+}
+
+.btn-new {
+	position: relative;
+	font-weight: 500;
+	font-size:14px;
+	color: #F7941D !important;
+	background: #FFF;
+	display: inline-block;
+	-webkit-transition: all 0.4s ease;
+	-moz-transition: all 0.4s ease;
+	transition: all 0.4s ease;
+	z-index: 5;
+	display: inline-block;
+	padding: 13px 32px;
+	border-radius: 0px;
+	text-transform:uppercase;
+}
+
+
+.btn-new:hover{
+	color:#fff !important;
 	background:#FCBE00;
 }
 #scrollUp {
@@ -868,7 +979,7 @@ body {
 	clear: initial;
 	margin: 0;
 	height: 48px;
-	width: 150px;
+	width: 200px;
 	border: none;
 	text-align: center;
 	background: transparent;
@@ -901,8 +1012,8 @@ body {
 }
 .header.shop .search-bar form {
 	display: inline-block;
-	float: left;
-	width: 260px;
+	float:left;
+	
 }
 .header.shop .search-bar input {
 	height: 48px;
@@ -1237,6 +1348,12 @@ body {
 	float: right;
 	position: relative;
 }
+
+
+
+
+
+
 .header.shop .right-bar .sinlge-bar.top-search a {
 	transform: translateY(3px);
 }
@@ -1254,7 +1371,7 @@ body {
 .header.shop .right-bar .sinlge-bar .single-icon .total-count {
 	position: absolute;
 	top: -7px;
-	right: -8px;
+	right: -15px;
 	background: #f6931d;
 	width: 18px;
 	height: 18px;
@@ -1627,17 +1744,17 @@ body {
 	position:relative;
 }
 .hero-area3 .small-content.first{
-    background-image: url('/backend/images/Featured1.png');
+    background-image: url('/backend/images/featured.png');
 }
 
 .hero-area3 .small-content.secound{
-    background-image: url('/backend/images/Featured2.png');
+    background-image: url('/backend/images/featured.png');
 }
 .hero-area3 .small-content.third{
-    background-image: url('/backend/images/Featured3.png');
+    background-image: url('/backend/images/featured.png');
 }
 .hero-area3 .small-content.fourth{
-    background-image: url('/backend/images/Featured4.png');
+    background-image: url('/backend/images/featured.png');
 }
 .hero-area3 .small-content .inner {
 	padding: 30px;
@@ -1995,9 +2112,20 @@ body {
 	border-color:transparent;
 }
 /* Sinlge Product */
-.single-product{
-	margin-top:5px;
+
+.single-product {
+    height: 350px; 
+    display: flex;
+    flex-direction: column; 
+	margin:5px 0;
+	/* box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    padding: 10px 10px 30px; */
+	
 }
+.product-content {
+    flex-grow: 1; 
+}
+
 .single-product .product-img {
   position: relative;
   overflow: hidden;
@@ -3173,20 +3301,20 @@ body {
 	background: #fff;
 }
 .shopping-cart {
-	background: #f6f6f6;
 	padding: 20px 0;
 }
 .shopping-summery thead .main-hading{
 	padding:0px 50px;
 }
 .shopping-summery thead {
-	background: #424646;
-	color: #fff;
+	background:#fff;
+	color: #424646 !important;
+
 }
 .shopping-summery thead tr th {
 	border: none;
 	font-weight: 600;
-	color: #fff;
+	color: #424646 !important;
 	text-align: center;
 }
 .shopping-summery tbody tr {
@@ -3414,6 +3542,11 @@ body {
 	font-size: 13px;
 	color: #fff;
 }
+.features-list ul li{
+	list-style-type: disc !important;
+	padding-left: 10px;
+	margin-bottom: 3px;
+}
 /*======================================
    End Shopping Cart CSS
 ========================================*/
@@ -3423,7 +3556,7 @@ body {
 ========================================*/
 .shop.checkout {
 	padding: 0;
-	background: #fff;
+	
 	padding-top: 20px;
 	padding-bottom: 50px;
 }
@@ -3893,6 +4026,11 @@ body {
 	margin-top:50px;
 	text-align:center;
 }
+
+.blogs p{
+	color:#333;
+}
+/* .categories.single-product{padding:10px;} */
 /*======================================
    End Shop List CSS
 ========================================*/

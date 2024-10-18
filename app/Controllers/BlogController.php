@@ -20,6 +20,25 @@ class BlogController extends BaseController
         return view('admin/pages/blogs/blogs', $data);
     }
 
+    public function blogDetails($id)
+    {
+        $blogModel = new BlogModel();
+        
+        $data['blog'] = $blogModel->where('id', $id)->first();
+        return view('backend/pages/blogs/blog-details', $data);
+    
+    
+    }
+
+    public function blogs() {
+        $full_name =CIAuth::id();
+        $blogModel = new BlogModel();
+        $data['blogs'] = $blogModel->findAll();
+        $data['full_name'] = $full_name;
+
+        return view('backend/pages/blogs/blogs', $data);
+    }
+
     public function create()
     {
         $full_name =CIAuth::id();
@@ -91,11 +110,6 @@ class BlogController extends BaseController
         return redirect()->to('/blogs');
     }
 
-    public function show($id)
-    {
-        $blogModel = new BlogModel();
-        $data['blog'] = $blogModel->find($id);
-        return view('blogs/show', $data);
-    }
+   
 }
 

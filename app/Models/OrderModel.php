@@ -14,7 +14,7 @@ class OrderModel extends Model
         'additional_phone',
         'address1',
         'address2',
-        'region_id',
+        'region',
         'city_id',
         'delivery_method',
         'payment_method',

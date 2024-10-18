@@ -1,50 +1,35 @@
 <div class="container">
     <?= $this->extend('backend/layout/pages-layout') ?>
     <?= $this->section('content') ?>
+    <?php   $currency = getenv('CURRENCY') ?? 'Ksh';?>
+
     <div class="container mt-3 mb-3">
+    <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <?php foreach ($breadcrumbs as $key => $breadcrumb): ?>
+            <li class="breadcrumb-item<?= $key === count($breadcrumbs) - 1 ? ' active' : ''; ?>">
+                <?php if ($key === count($breadcrumbs) - 1): ?>
+                    <span><?= esc($breadcrumb['name']); ?></span>
+                <?php else: ?>
+                    <a href="<?= esc($breadcrumb['url']); ?>"><?= esc($breadcrumb['name']); ?></a>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+    </ol>
+</nav>
+
+
         <div class="row">
             <div class="col-lg-3 col-md-4 col-12">
-                <div class="shop-sidebar">
-                    <!-- Category Widget -->
-                    <div class="single-widget category">
-                        <h3 class="title">Categories</h3>
-                        <ul class="categor-list">
-                            <!-- Dynamically Loop through Categories -->
-                            <?php foreach ($categories as $category): ?>
-                                <li><a href="<?= base_url('categories/category/' . $category['slug']); ?>"><?= $category['name']; ?></a></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                    <!-- Shop by Price Widget -->
-                    <div class="single-widget range">
-                        <h3 class="title">Shop by Price</h3>
-                        <div class="price-filter">
-                            <!-- Add slider and price filters here -->
-                        </div>
-                    </div>
-                    <!-- Recent Posts -->
-                    <div class="single-widget recent-post">
-                        <h3 class="title">Recent Posts</h3>
-                        <div class="single-post">
-                            <div class="image">
-                                <img src="path_to_recent_product_image" alt="#">
-                            </div>
-                            <div class="content">
-                                <h5><a href="#">Recent Product Name</a></h5>
-                                <p class="price">$99.50</p>
-                            </div>
-                        </div>
-                        <!-- Repeat for more posts -->
-                    </div>
-                </div>
+            <?php include APPPATH . 'Views/backend/pages/sidebar.php'; ?>
+
             </div>
 
             <div class="col-lg-9 col-md-8 col-12">
                 <div class="row">
-                    <!-- Shop Top Controls -->
                     <div class="col-12">
-                        <div class="shop mt-3 mb-3">
-                            <h4 class="title text-center"><?= esc($subcategory['name']) ?></h4>
+                        <div class="shop mb-3">
+                            <h4 class="title"><?= esc($subcategory['name']) ?></h4>
                         </div>
                     </div>
                 </div>
@@ -53,27 +38,32 @@
                 <div class="row">
                     <?php if (!empty($products)): ?>
                         <?php foreach ($products as $product): ?>
-                            <div class="col-lg-4 col-md-6 col-12">
-                                <div class="single-product">
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <div class="single-product card">
                                     <div class="product-img">
-                                        <a href="<?= base_url('admin/products/details/' . $product['slug']); ?>">
+                                        <a href="<?= base_url('products/details/' . $product['slug']); ?>">
                                             <img class="default-img" src="<?= base_url('backend/images/' . $product['image']); ?>" alt="<?= esc($product['name']); ?>">
                                         </a>
                                         <div class="button-head">
-                                            <div class="product-action">
-                                                <a data-toggle="modal" title="Quick View" href="#"><i class="ti-eye"></i><span>Quick Shop</span></a>
-                                                <a title="Wishlist" href="#"><i class="ti-heart"></i><span>Add to Wishlist</span></a>
-                                            </div>
-                                            <div class="product-action-2">
-                                                <a title="Add to cart" href="#">Add to cart</a>
-                                            </div>
+                                        <div class="product-action">
+
+                                            <a title="Wishlist" class="add-to-wishlist" data-id="<?= $product['id'] ?>"
+                                                href="#"><i class="ti-heart p-2"></i>
+                                                <span>Add to Wishlist</span></a>
+
+                                        </div>
+                                        <div class="product-action-2">
+                                            <a title="Add to cart" class="btn-sm btn-danger add-to-cart"
+                                                data-id="<?= $product['id'] ?>" href="#">Add to cart</a>
                                         </div>
                                     </div>
-                                    <div class="product-content">
-                                        <h3><a href="<?= base_url('admin/products/details/' . $product['slug']); ?>"><?= esc($product['name']); ?></a></h3>
+                                    </div>
+                                    <div class="product-content p-2">
+                                        <h3><a href="<?= base_url('products/details/' . $product['slug']); ?>"><?= esc($product['name']); ?></a></h3>
                                         <div class="product-price">
-                                            <span>$<?= esc($product['price']); ?></span>
-                                        </div>
+    <span><?= esc($currency) ?> <?= number_format($product['price'], 0, '.', ','); ?></span>
+</div>
+
                                     </div>
                                 </div>
                             </div>
@@ -88,6 +78,8 @@
             </div>
         </div>
     </div>
+    <?php include APPPATH . 'Views/backend/pages/js.php'; ?>
+    <?php include APPPATH . 'Views/backend/pages/modal/cart-modal.php'; ?>
 
     <?= $this->endSection() ?>
 </div>

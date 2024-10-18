@@ -45,6 +45,8 @@ class Autoload extends AutoloadConfig
 
     ];
 
+
+
     /**
      * -------------------------------------------------------------------
      * Class Map
@@ -92,5 +94,5 @@ class Autoload extends AutoloadConfig
      *
      * @var list<string>
      */
-    public $helpers = [];
+    public $helpers = ['breadcrumbs'];
 }

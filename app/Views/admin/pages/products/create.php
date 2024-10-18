@@ -77,35 +77,41 @@
                                         <textarea name="features" class="form-control" id="features"></textarea>
                                     </div>
                                 </div>
-                            
 
                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="category_id">Category</label>
-                                        <select name="category_id" class="form-control" id="category_id" required>
-                                            <option value="">Select Category</option>
-                                            <?php foreach ($categories as $category): ?>
-                                                <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
+                                <div class="form-group">
+    <label for="product_category">Select Product Category</label>
+    <select name="subsubcategory_id" class="form-control" id="product_category" required>
+        <option value="">Select Category</option>
+        <?php foreach ($categories as $category): ?>
+            <optgroup label="<?= esc($category['name']) ?>">
+                <?php foreach ($category['subcategories'] as $subcategory): ?>
+                    <optgroup label="-- <?= esc($subcategory['name']) ?>">
+                        <?php foreach ($subcategory['subsubcategories'] as $subsubcategory): ?>
+                            <option value="<?= esc($subsubcategory['id']) ?>" 
+                                data-category-id="<?= esc($category['id']) ?>" 
+                                data-subcategory-id="<?= esc($subcategory['id']) ?>">
+                                --- <?= esc($subsubcategory['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </optgroup>
+                <?php endforeach; ?>
+            </optgroup>
+        <?php endforeach; ?>
+    </select>
+    <!-- Hidden fields to hold the category and subcategory IDs -->
+    <input type="hidden" name="category_id" id="category_id">
+    <input type="hidden" name="subcategory_id" id="subcategory_id">
+</div>
+
+
+
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="subcategory_id">Subcategory</label>
-                                        <select name="subcategory_id" class="form-control" id="subcategory_id" required>
-                                            <!-- Subcategories will be dynamically loaded based on category selection -->
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="subsubcategory_id">Subsubcategory</label>
-                                        <select name="subsubcategory_id" class="form-control" id="subsubcategory_id" >
-                                            <!-- Subsubcategories will be dynamically loaded based on subcategory selection -->
-                                        </select>
-                                    </div>
-                                </div>
+
+
+
+
+
 
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -162,53 +168,17 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Fetch subcategories based on category selection
-        document.getElementById('category_id').addEventListener('change', function () {
-            const categoryId = this.value;
-            fetchSubcategories(categoryId);
-        });
 
-        function fetchSubcategories(categoryId) {
-            fetch('<?= base_url("admin/products/getSubcategories") ?>/' + categoryId)
-                .then(response => response.json())
-                .then(data => {
-                    const subcategorySelect = document.getElementById('subcategory_id');
-                    subcategorySelect.innerHTML = ''; // Clear previous subcategories
-
-                    data.forEach(subcategory => {
-                        const option = document.createElement('option');
-                        option.value = subcategory.id;
-                        option.textContent = subcategory.name;
-                        subcategorySelect.appendChild(option);
-                    });
-                });
-        }
-
-        // Fetch subsubcategories based on subcategory selection
-document.getElementById('subcategory_id').addEventListener('change', function () {
-    const subcategoryId = this.value;
-    fetchSubsubcategories(subcategoryId);
-});
-
-function fetchSubsubcategories(subcategoryId) {
-    fetch('<?= base_url("admin/products/getSubsubcategories") ?>/' + subcategoryId)
-        .then(response => response.json())
-        .then(data => {
-            const subsubcategorySelect = document.getElementById('subsubcategory_id');
-            subsubcategorySelect.innerHTML = ''; // Clear previous subsubcategories
-
-            data.forEach(subsubcategory => {
-                const option = document.createElement('option');
-                option.value = subsubcategory.id;
-                option.textContent = subsubcategory.name;
-                subsubcategorySelect.appendChild(option);
-            });
-        });
-}
-
-    </script>
+        CKEDITOR.replace('description');
+        CKEDITOR.replace('features');
 
 
+    document.getElementById('product_category').addEventListener('change', function() {
+        var selectedOption = this.options[this.selectedIndex];
+        document.getElementById('category_id').value = selectedOption.getAttribute('data-category-id');
+        document.getElementById('subcategory_id').value = selectedOption.getAttribute('data-subcategory-id');
+    });
+</script>
 
     <?= $this->endSection() ?>
 

@@ -8,13 +8,21 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Libraries\CIAuth;
 use App\Libraries\Hash;
 use App\Models\UserModel;
-use App\Models\Logs;
+use App\Models\AdminModel;
 
 class AuthController extends BaseController
 {
 
     protected $helpers = ['url', 'form'];
-    public function loginForm()
+    public function adminLoginForm()
+    {
+        $data = [
+            'pageTitle' => 'Login',
+            'validation' => null
+        ];
+        return view('admin/pages/auth/login', $data);
+    }
+    public function userLoginForm()
     {
         $data = [
             'pageTitle' => 'Login',
@@ -91,79 +99,87 @@ class AuthController extends BaseController
     }
 }
 
-
-    // public function registerHandler()
-    // {
-    //     $validation = \Config\Services::validation();
-    //     $rules = [
-    //         'username' => 'required|min_length[3]',
-    //         'email'    => 'required|valid_email|is_unique[users.email]',
-    //         'password' => 'required|min_length[5]',
-    //     ];
-
-    //     if (!$this->validate($rules)) {
-    //         return redirect()->back()->withInput()->with('errors', $validation->getErrors());
-    //     }
-
-    //     $userModel = new UserModel();
-    //     $data = [
-    //         'username' => $this->request->getPost('username'),
-    //         'email'    => $this->request->getPost('email'),
-    //         'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-    //     ];
-
-    //     $userModel->save($data);
-
-    //     return redirect()->to(base_url('/login'))->with('success', 'Account created successfully');
-    // }
     
-    public function loginHandler()
-    {
+private function performLogin($model, $email, $password, $loginType)
+{
+    // Query user by email
+    $userInfo = $model->where('email', $email)->first();
+    if (!$userInfo) {
+        log_message('error', "User not found for email: {$email}");
+        return redirect()->back()->with('fail', 'User does not exist')->withInput();
+    }
+
+    // Verify password
+    if (!password_verify($password, $userInfo['password'])) {
+        log_message('error', "Password mismatch for user: {$email}");
+        return redirect()->back()->with('fail', 'Wrong password')->withInput();
+    }
+
+    // Set session data
+    $sessionData = [
+        'user_id'   => $userInfo['id'],
+        'email'     => $userInfo['email'],
+        'is_admin'  => ($loginType === 'admin'),
+        'logged_in' => true,
+    ];
+    session()->set($sessionData);
+
+    log_message('info', "Login successful for {$loginType}: {$email}");
+
+    // Redirect based on login type
+    return ($loginType === 'admin') 
+        ? redirect()->to(base_url('/admin'))->with('success', 'Admin login successful')
+        : redirect()->to(base_url('/'))->with('success', 'User login successful');
+}
+public function adminLoginHandler()
+{
+    try {
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
 
-        $validationRules = [
-            'email' => [
-                'rules' => 'required|valid_email|is_not_unique[users.email]',
-                'errors' => [
-                    'required' => 'Email is required',
-                    'valid_email' => 'Please provide a valid email address',
-                    'is_not_unique' => 'This email does not exist in the system',
-                ]
-            ],
-            'password' => [
-                'rules' => 'required|max_length[45]',
-                'errors' => [
-                    'required' => 'Password is required',
-                    'max_length' => 'Password must not be longer than 45 characters',
-                ]
-            ]
-        ];
-    
-        if (!$this->validate($validationRules)) {
+        // Validate input
+        if (!$this->validate(['email' => 'required|valid_email', 'password' => 'required|max_length[45]'])) {
             return view('backend/pages/auth/login', [
-                'pageTitle' => 'Login',
-                'validation' => $this->validator
+                'pageTitle'  => 'Admin Login',
+                'validation' => $this->validator,
             ]);
-        } else {
-            $userModel = new UserModel();
-    
-            $userInfo = $userModel->where('email', $email)->first();
-    
-            if (!$userInfo) {
-                return redirect()->to(base_url('/login'))->with('fail', 'User does not exist')->withInput();
-            }
-    
-            $checkPassword = HASH::check($this->request->getPost('password'), $userInfo['password']);
-            if (!$checkPassword) {
-                return redirect()->to(base_url('/login'))->with('fail', 'Wrong password')->withInput();
-            } else {
-                CIAuth::CIAuth($userInfo);
-    
-                return redirect()->to(base_url('/'))->with('success', 'Login successful');
-            }
         }
+
+        log_message('debug', "Admin login attempt: {$email}");
+        return $this->performLogin(new AdminModel(), $email, $password, 'admin');
+
+    } catch (\Exception $e) {
+        log_message('critical', "Admin login error: {$e->getMessage()}");
+        return redirect()->back()->with('fail', 'An unexpected error occurred')->withInput();
     }
+}
+
+public function userLoginHandler()
+{
+    try {
+        $email = $this->request->getPost('email');
+        $password = $this->request->getPost('password');
+
+        // Validate input
+        if (!$this->validate(['email' => 'required|valid_email', 'password' => 'required|max_length[45]'])) {
+            return view('backend/pages/auth/login', [
+                'pageTitle'  => 'User Login',
+                'validation' => $this->validator,
+            ]);
+        }
+
+        log_message('debug', "User login attempt: {$email}");
+        return $this->performLogin(new UserModel(), $email, $password, 'user');
+
+    } catch (\Exception $e) {
+        log_message('critical', "User login error: {$e->getMessage()}");
+        return redirect()->back()->with('fail', 'An unexpected error occurred')->withInput();
+    }
+}
+
+
+
+  
     
    
     

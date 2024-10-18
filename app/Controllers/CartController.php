@@ -18,16 +18,16 @@ class CartController extends BaseController
         try {
             $productModel = new ProductModel();
             $product = $productModel->find($productId);
+            $quantity = $this->request->getPost('qty') ?? 1;
     
             if (!$product) {
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Product not found.']);
             }
     
             $cart = \Config\Services::cart();
-    
             $data = [
                 'id'      => $product['id'],
-                'qty'     => 1,
+                'qty'     => $quantity,
                 'price'   => $product['price'],
                 'name'    => $product['name'],
                 'options' => ['image' => $product['image']]
@@ -42,27 +42,26 @@ class CartController extends BaseController
             return $this->response->setJSON([
                 'status' => 'success',
                 'message' => 'Product added to cart.',
-                'totalItems' => $totalItems
+                'totalItems' => $totalItems,
+                'csrfName' => csrf_token(), 
+                'csrfHash' => csrf_hash()   
             ]);
         } catch (\Exception $e) {
             log_message('error', 'Error in addToCart: ' . $e->getMessage());
             return $this->response->setJSON(['status' => 'error', 'message' => 'An error occurred.']);
         }
     }
+    
 
     public function cartInfo() {
         $cart = \Config\Services::cart();
     
-        log_message('debug', 'Cart service initiated.');
         
         $totalItems = $cart->totalItems();
-        log_message('debug', 'Total items in cart: ' . $totalItems);
     
         $cartContents = $cart->contents();
-        log_message('debug', 'Cart contents: ' . json_encode($cartContents));
         
         $totalAmount = $cart->total();
-        log_message('debug', 'Cart total amount: ' . $totalAmount);
     
         $response = [
             'totalItems'  => $totalItems,
@@ -70,7 +69,6 @@ class CartController extends BaseController
             'totalAmount' => number_format($totalAmount, 2)
         ];
     
-        log_message('debug', 'Cart response: ' . json_encode($response));
     
         return $this->response->setJSON($response);
     }
@@ -116,6 +114,38 @@ class CartController extends BaseController
 
     public function update()
 {
+    $cart = \Config\Services::cart(); 
+
+    $rowid = $this->request->getPost('rowid');  
+    $qty = $this->request->getPost('qty');      
+
+    log_message('debug', 'Updating cart. Row ID: ' . $rowid . ', Quantity: ' . $qty);
+
+    if (!$rowid || !$qty || $qty < 1) {
+        log_message('error', 'Invalid row ID or quantity. Row ID: ' . $rowid . ', Quantity: ' . $qty);
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Invalid request.']);
+    }
+
+    $cartContents = $cart->contents();
+
+    $cartItem = $cart->getItem($rowid);  
+    if (!$cartItem) {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Cart item not found.']);
+    }
+
+    $updateStatus = $cart->update(['rowid' => $rowid, 'qty' => $qty]);
+
+   
+    if ($updateStatus) {
+        return $this->response->setJSON(['status' => 'success', 'message' => 'Cart updated successfully.']);
+    } else {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Failed to update cart.']);
+    }
+}
+
+
+   /* public function update()
+{
     $cart = \Config\Services::cart();
 
     $rowid = $this->request->getPost('rowid');  
@@ -154,7 +184,7 @@ class CartController extends BaseController
         log_message('error', 'Failed to update cart for Row ID: ' . $rowid);
         return $this->response->setJSON(['status' => 'error', 'message' => 'Failed to update cart.']);
     }
-}
+}*/
 
 
 // public function update()

@@ -40,69 +40,90 @@
                             </div>
                         <?php endif; ?>
 
-                        <form action="<?= base_url('admin/products/update/' . $product['slug']) ?>" method="post" enctype="multipart/form-data">
+                        <form action="<?= base_url('admin/products/update/' . $product['slug']) ?>" method="post"
+                            enctype="multipart/form-data">
                             <?= csrf_field() ?>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="name">Product Name</label>
-                                        <input type="text" name="name" class="form-control" id="name" value="<?= esc($product['name']) ?>" required>
+                                        <input type="text" name="name" class="form-control" id="name"
+                                            value="<?= esc($product['name']) ?>" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="price">Original Price</label>
-                                        <input type="text" name="price" class="form-control" id="price" value="<?= esc($product['price']) ?>" required>
+                                        <input type="text" name="price" class="form-control" id="price"
+                                            value="<?= esc($product['price']) ?>" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="discounted_price">Discounted Price</label>
-                                        <input type="text" name="discounted_price" class="form-control" id="discounted_price" value="<?= esc($product['discounted_price']) ?>">
+                                        <input type="text" name="discounted_price" class="form-control"
+                                            id="discounted_price" value="<?= esc($product['discounted_price']) ?>">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="description">Description</label>
-                                        <textarea name="description" class="form-control" id="description" required><?= esc($product['description']) ?></textarea>
+                                        <textarea name="description" class="form-control" id="description"
+                                            required><?= esc($product['description']) ?></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="features">Features</label>
-                                        <textarea name="features" class="form-control" id="features"><?= esc($product['features']) ?></textarea>
+                                        <textarea name="features" class="form-control"
+                                            id="features"><?= esc($product['features']) ?></textarea>
                                     </div>
                                 </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="product_category">Select Product Category</label>
+                                        <select name="subsubcategory_id" class="form-control" id="product_category"
+                                            required>
+                                            <option value="">Select Category</option>
+                                            <?php foreach ($categories as $category): ?>
+                                                <optgroup label="<?= esc($category['name']) ?>">
+                                                    <?php foreach ($category['subcategories'] as $subcategory): ?>
+                                                    <optgroup label="-- <?= esc($subcategory['name']) ?>">
+                                                        <?php foreach ($subcategory['subsubcategories'] as $subsubcategory): ?>
+                                                            <option value="<?= esc($subsubcategory['id']) ?>"
+                                                                data-category-id="<?= esc($category['id']) ?>"
+                                                                data-subcategory-id="<?= esc($subcategory['id']) ?>"
+                                                                <?= ($subsubcategory['id'] == $product['subsubcategory_id']) ? 'selected' : '' ?>>
+                                                                --- <?= esc($subsubcategory['name']) ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </optgroup>
+                                                <?php endforeach; ?>
+                                                </optgroup>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <!-- Hidden fields to hold the category and subcategory IDs -->
+                                        <input type="hidden" name="category_id" id="category_id"
+                                            value="<?= esc($product['category_id']) ?>">
+                                        <input type="hidden" name="subcategory_id" id="subcategory_id"
+                                            value="<?= esc($product['subcategory_id']) ?>">
+                                    </div>
+
+                                </div>
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="stock">Stock</label>
-                                        <input type="number" name="stock" class="form-control" id="stock" value="<?= esc($product['stock']) ?>" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="category_id">Category</label>
-                                        <select name="category_id" class="form-control" id="category_id" required>
-                                            <option value="">Select Category</option>
-                                            <?php foreach ($categories as $category): ?>
-                                                <option value="<?= $category['id'] ?>" <?= ($category['id'] == $product['category_id']) ? 'selected' : '' ?>><?= esc($category['name']) ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="subcategory_id">Subcategory</label>
-                                        <select name="subcategory_id" class="form-control" id="subcategory_id" required>
-                                            <!-- Subcategories will be dynamically loaded based on category selection -->
-                                        </select>
+                                        <input type="number" name="stock" class="form-control" id="stock"
+                                            value="<?= esc($product['stock']) ?>" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
     <div class="form-group">
         <label for="image">Main Product Image</label>
         <input type="file" name="image" class="form-control-file" id="image">
-        <small>Current Image: <img src="<?= base_url('/backend/images/' . esc($product['image'])) ?>" alt="<?= esc($product['name']) ?>" style="max-width:100px;"></small>
+        <small>Current Image: <?= esc($product['image']) ?></small> <!-- Show the image name -->
         <div class="form-check">
             <input class="form-check-input" type="checkbox" name="remove_main_image" value="1" id="removeMainImage">
             <label class="form-check-label" for="removeMainImage">
@@ -120,7 +141,7 @@
         <ul>
             <?php foreach (json_decode($product['sideview_images'], true) as $index => $image): ?>
                 <li>
-                    <img src="<?= base_url('/backend/images/' . esc($image)) ?>" alt="<?= esc($product['name']) ?>" style="max-width:100px;">
+                    <?= esc($image) ?> <!-- Show the image name -->
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="remove_sideview_images[]" value="<?= $index ?>" id="removeSideImage<?= $index ?>">
                         <label class="form-check-label" for="removeSideImage<?= $index ?>">
@@ -133,12 +154,15 @@
     </div>
 </div>
 
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="is_top_deal">Top Deal</label>
                                         <select name="is_top_deal" class="form-control" id="is_top_deal">
-                                            <option value="0" <?= ($product['is_top_deal'] == 0) ? 'selected' : '' ?>>No</option>
-                                            <option value="1" <?= ($product['is_top_deal'] == 1) ? 'selected' : '' ?>>Yes</option>
+                                            <option value="0" <?= ($product['is_top_deal'] == 0) ? 'selected' : '' ?>>No
+                                            </option>
+                                            <option value="1" <?= ($product['is_top_deal'] == 1) ? 'selected' : '' ?>>Yes
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
@@ -146,14 +170,17 @@
                                     <div class="form-group">
                                         <label for="is_recommended">Recommended</label>
                                         <select name="is_recommended" class="form-control" id="is_recommended">
-                                            <option value="0" <?= ($product['is_recommended'] == 0) ? 'selected' : '' ?>>No</option>
-                                            <option value="1" <?= ($product['is_recommended'] == 1) ? 'selected' : '' ?>>Yes</option>
+                                            <option value="0" <?= ($product['is_recommended'] == 0) ? 'selected' : '' ?>>No
+                                            </option>
+                                            <option value="1" <?= ($product['is_recommended'] == 1) ? 'selected' : '' ?>>
+                                                Yes</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary">Update</button>
-                                    <span><a class="btn btn-info" href="<?= base_url('admin/products') ?>">Cancel</a></span>
+                                    <span><a class="btn btn-info"
+                                            href="<?= base_url('admin/products') ?>">Cancel</a></span>
                                 </div>
                             </div>
                         </form>
@@ -162,31 +189,25 @@
             </div>
         </div>
     </div>
-    
+
     <?= $this->section('scripts') ?>
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        // Fetch subcategories based on category selection
-        document.getElementById('category_id').addEventListener('change', function() {
-            const categoryId = this.value;
-            fetchSubcategories(categoryId);
+          CKEDITOR.replace('description');
+          CKEDITOR.replace('features');
+
+        document.getElementById('product_category').addEventListener('change', function () {
+            var selectedOption = this.options[this.selectedIndex];
+            document.getElementById('category_id').value = selectedOption.getAttribute('data-category-id');
+            document.getElementById('subcategory_id').value = selectedOption.getAttribute('data-subcategory-id');
         });
 
-        function fetchSubcategories(categoryId) {
-            fetch('<?= base_url("admin/products/getSubcategories") ?>/' + categoryId)
-                .then(response => response.json())
-                .then(data => {
-                    const subcategorySelect = document.getElementById('subcategory_id');
-                    subcategorySelect.innerHTML = ''; // Clear previous subcategories
-
-                    data.forEach(subcategory => {
-                        const option = document.createElement('option');
-                        option.value = subcategory.id;
-                        option.textContent = subcategory.name;
-                        subcategorySelect.appendChild(option);
-                    });
-                });
+        var preselectedOption = document.querySelector('option[selected]');
+        if (preselectedOption) {
+            document.getElementById('category_id').value = preselectedOption.getAttribute('data-category-id');
+            document.getElementById('subcategory_id').value = preselectedOption.getAttribute('data-subcategory-id');
         }
     </script>
 

@@ -100,6 +100,7 @@ echo view('backend/layout/inc/header', ['categories' => $categories]);
     <script src="<?= base_url('backend/js/onepage-nav.min.js') ?>"></script>
     <!-- Easing JS -->
     <script src="<?= base_url('backend/js/easing.js') ?>"></script>
+
     <!-- Active JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

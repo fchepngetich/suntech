@@ -1,9 +1,17 @@
 <div class="container">
     <?= $this->extend('backend/layout/pages-layout') ?>
     <?= $this->section('content') ?>
+        <?php $currency = getenv('CURRENCY') ?? 'Ksh'; ?>
+
     <div class="wishlist section">
         <div class="container">
-            <h5 class="text-center">My Wishlist</h5>
+        <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="<?= base_url(); ?>">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">My Wishlist</li>
+                </ol>
+            </nav>
+            <!-- <h5 class="text-center">My Wishlist</h5> -->
             <div class="row mt-2">
 
                 <div class="col-12">
@@ -31,7 +39,7 @@
                                             <p class="product-des">Description of the product goes here.</p>
                                         </td>
                                         <td class="price" data-title="Price">
-                                            <span>$<?= number_format($item['price'], 2) ?></span>
+                                            <span><?= esc($currency) ?> <?= number_format($item['price'], 2) ?></span>
                                         </td>
                                         <td class="action" data-title="Remove">
                                             <a href="#" class="remove-item" data-id="<?= esc($item['id']) ?>"><i

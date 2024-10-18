@@ -7,38 +7,39 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\SubcategoryModel;
 use App\Models\CategoryModel;
 use App\Models\ProductModel;
+use App\Models\BlogModel;
 
 class SubcategoryController extends BaseController
 {
-//administrator methods starts here
+    //administrator methods starts here
 
-    
 
-public function index()
-{
-    $full_name = 'Faith';
 
-    $subcategoryModel = new SubcategoryModel();
-    $categoryModel = new CategoryModel();
+    public function index()
+    {
+        $full_name = 'Faith';
 
-    $subcategories = $subcategoryModel->findAll();
+        $subcategoryModel = new SubcategoryModel();
+        $categoryModel = new CategoryModel();
 
-    foreach ($subcategories as &$subcategory) {
-        $category = $categoryModel->find($subcategory['category_id']);
-        $subcategory['category_name'] = $category ? $category['name'] : 'N/A'; // Assign category name or default to N/A
+        $subcategories = $subcategoryModel->findAll();
+
+        foreach ($subcategories as &$subcategory) {
+            $category = $categoryModel->find($subcategory['category_id']);
+            $subcategory['category_name'] = $category ? $category['name'] : 'N/A'; // Assign category name or default to N/A
+        }
+
+        return view('admin/pages/subcategories/view', [
+            'subcategories' => $subcategories,
+            'full_name' => $full_name, // Include full name in the data passed to the view
+        ]);
     }
-
-    return view('admin/pages/subcategories/view', [
-        'subcategories' => $subcategories,
-        'full_name' => $full_name, // Include full name in the data passed to the view
-    ]);
-}
 
 
 
     public function create()
     {
-        $full_name ='Faith';
+        $full_name = 'Faith';
         $categoryModel = new CategoryModel();
         $data['categories'] = $categoryModel->findAll();
         $data['full_name'] = $full_name;
@@ -52,88 +53,88 @@ public function index()
             'name' => 'required|min_length[3]|max_length[255]',
             'category_id' => 'required|integer',
         ]);
-    
+
         if (!$validation) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
-    
+
         $subcategoryModel = new SubcategoryModel();
-        
+
         $slug = url_title($this->request->getPost('name'), '-', true);
-    
+
         $data = [
             'name' => $this->request->getPost('name'),
             'category_id' => $this->request->getPost('category_id'),
-            'slug' => $slug, 
+            'slug' => $slug,
         ];
-    
+
         if ($subcategoryModel->where('slug', $slug)->first()) {
             return redirect()->back()->withInput()->with('errors', ['slug' => 'The slug must be unique.']);
         }
-    
+
         $subcategoryModel->save($data);
-    
+
         return redirect()->to(base_url('admin/subcategories'))->with('message', 'Subcategory created successfully.');
     }
-    
-    
+
+
 
     public function edit($slug)
     {
         $full_name = 'Faith';
-    
+
         $subcategoryModel = new SubcategoryModel();
         $categoryModel = new CategoryModel();
-        
+
         $subcategory = $subcategoryModel->where('slug', $slug)->first();
-        
+
         if (!$subcategory) {
             return redirect()->to(base_url('admin/subcategories'))->with('error', 'Subcategory not found.');
         }
-        
+
         $data['subcategory'] = $subcategory;
         $data['categories'] = $categoryModel->findAll();
         $data['full_name'] = $full_name;
-    
+
         return view('admin/pages/subcategories/edit', $data);
     }
-    
+
     public function update($slug)
     {
         $subcategoryModel = new SubcategoryModel();
-        
+
         $validation = $this->validate([
             'name' => 'required|min_length[3]|max_length[255]',
             'category_id' => 'required|integer',
         ]);
-    
+
         if (!$validation) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
-    
+
         $newSlug = url_title($this->request->getPost('name'), '-', true);
-        
+
         $subcategory = $subcategoryModel->where('slug', $slug)->first();
-    
+
         if (!$subcategory) {
             return redirect()->to(base_url('admin/subcategories'))->with('error', 'Subcategory not found.');
         }
-    
+
         if ($newSlug !== $slug && $subcategoryModel->where('slug', $newSlug)->first()) {
             return redirect()->back()->withInput()->with('errors', ['slug' => 'The slug must be unique.']);
         }
-    
+
         $data = [
             'name' => $this->request->getPost('name'),
             'category_id' => $this->request->getPost('category_id'),
             'slug' => $newSlug,
         ];
-        
+
         $subcategoryModel->update($subcategory['id'], $data);
-    
+
         return redirect()->to(base_url('admin/subcategories'))->with('message', 'Subcategory updated successfully.');
     }
-    
+
 
     public function delete($slug)
     {
@@ -142,25 +143,50 @@ public function index()
         return redirect()->to('admin/subcategories')->with('message', 'Subcategory deleted successfully.');
     }
 
-//admin methods ends here
+    //admin methods ends here
 
     public function subcategoryItems($slug)
-{
-    $subcategoryModel = new SubcategoryModel();
-    $itemModel = new ProductModel();
-    $categoryModel = new CategoryModel();
-
-$categories = $categoryModel->findAll();
-    $subcategory = $subcategoryModel->where('slug', $slug)->first();
-
-    if (!$subcategory) {
-        log_message('error', 'Subcategory not found: ' . $slug);
-        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+    {
+        // Initialize models
+        $subcategoryModel = new SubcategoryModel();
+        $itemModel = new ProductModel();
+        $categoryModel = new CategoryModel();
+        $blogModel = new BlogModel();
+    
+        // Fetch the latest blogs
+        $blogs = $blogModel->orderBy('created_at', 'DESC')->limit(3)->find();
+    
+        // Fetch the subcategory based on the slug
+        $subcategory = $subcategoryModel->where('slug', $slug)->first();
+    
+        // Check if the subcategory exists
+        if (!$subcategory) {
+            log_message('error', 'Subcategory not found: ' . $slug);
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+    
+        // Fetch the associated category
+        $category = $categoryModel->find($subcategory['category_id']);
+    
+        // Breadcrumbs setup
+        $breadcrumbs = [
+            ['url' => base_url(), 'name' => 'Home'], // Corrected URL to base URL
+            ['url' => base_url('categories/category/' . $category['slug']), 'name' => $category['name']], // Corrected category link
+            ['url' => '', 'name' => $subcategory['name']], // Last item as non-clickable
+        ];
+    
+        // Fetch products in the selected subcategory
+        $products = $itemModel->where('subcategory_id', $subcategory['id'])->findAll();
+    
+        // Pass data to the view
+        return view('backend/pages/subcategories/subcategory-details', [
+            'subcategory' => $subcategory,
+            'blogs' => $blogs,
+            'breadcrumbs' => $breadcrumbs,
+            'subcategories' => $subcategoryModel->findAll(), // If you want to display all subcategories
+            'products' => $products
+        ]);
     }
-
-    $products = $itemModel->where('subcategory_id', $subcategory['id'])->findAll();
-
-    return view('backend/pages/subcategories/subcategory-details', ['subcategory' => $subcategory,'categories'=>$categories, 'products' => $products]);
-}
+    
 
 }

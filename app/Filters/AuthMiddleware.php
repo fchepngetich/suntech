@@ -32,8 +32,8 @@ class AuthMiddleware implements FilterInterface
         }
 
         if ($session->has('userdata')) {
-            $fullName = $session->get('userdata')['full_name'];
-            $session->set('full_name', $fullName);
+            $fullName = $session->get('userdata')['username'];
+            $session->set('username', $fullName);
         }
     }
 

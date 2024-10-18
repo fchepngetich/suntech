@@ -11,9 +11,12 @@ class Home extends BaseController
     public function index()
     {
         // $categories = $this->getCategories();
+        $currency = getenv('CURRENCY') ?? 'Ksh';
+
         $productModel = new ProductModel();
         $data['topDeals'] = $productModel->getTopDeals();
         $data['recommendedProducts'] = $productModel->getRecommendedProducts();
+        $data['currency'] = $currency; // Add this line
         // $data['categories'] = $categories;
         $blogModel = new BlogModel();
         

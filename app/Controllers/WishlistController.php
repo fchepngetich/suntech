@@ -9,7 +9,7 @@ use App\Models\ProductModel;
 use App\Libraries\CIAuth;
 
 
-        class WishlistController extends BaseController
+class WishlistController extends BaseController
    
 {
     protected $wishlistModel;
@@ -22,40 +22,12 @@ use App\Libraries\CIAuth;
         helper('session'); // Load the session helper
     }
 
-    // Add product to wishlist
-    // public function addToWishlist()
-    // {
-    //     if ($this->request->isAJAX()) {
-    //         $productId = $this->request->getPost('product_id');
-    //         $userId = CIAuth::id();
-
-    //         if (!$userId) {
-    //             return $this->response->setJSON(['status' => 'error', 'message' => 'Please log in to add items to your wishlist.']);
-    //         }
-
-    //         $productModel = new ProductModel();
-    //         $product = $productModel->find($productId);
-
-    //         if (!$product) {
-    //             return $this->response->setJSON(['status' => 'error', 'message' => 'Product not found.']);
-    //         }
-
-    //         $wishlist = session()->get('wishlist') ?? [];
-
-    //         if (!in_array($productId, $wishlist)) {
-    //             $wishlist[] = $productId;
-    //             session()->set('wishlist', $wishlist);
-    //         }
-
-    //         return $this->response->setJSON(['status' => 'success', 'message' => 'Product added to wishlist.']);
-    //     }
-    // }
-
+  
     public function addToWishlist()
     {
         if ($this->request->isAJAX()) {
             $productId = $this->request->getPost('product_id');
-            $userId = CIAuth::id();
+            $userId = session()->get('user_id');
 
             if (!$userId) {
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Please log in to add items to your wishlist.']);
@@ -83,8 +55,9 @@ use App\Libraries\CIAuth;
     
     public function viewWishlist()
     {
-        $userId = CIAuth::id();
-
+        if (session()->has('logged_in') && session()->get('logged_in')) {
+            $userId = session()->get('user_id');
+        }
         if (!$userId) {
             return redirect()->to('/login')->with('error', 'Please log in to view your wishlist.');
         }

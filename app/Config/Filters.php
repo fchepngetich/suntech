@@ -37,6 +37,7 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'cifilter'      =>CIFilter::class,
         'auth'          =>AuthMiddleware::class,
+        'admin'          =>AdminMiddleware::class,
     ];
 
     /**
@@ -74,7 +75,7 @@ class Filters extends BaseFilters
         'before' => [
 
             // 'honeypot',
-             'csrf',
+            // 'csrf',
             // 'invalidchars',
         ],
         'after' => [
