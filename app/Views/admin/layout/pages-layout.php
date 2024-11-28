@@ -52,7 +52,7 @@
 	<script src="/backend/vendors/scripts/process.js"></script>
 	<script src="/backend/vendors/scripts/layout-settings.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-	<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/4.20.0/standard/ckeditor.js"></script>
 	<?= $this->renderSection('scripts') ?>
 </body>
 

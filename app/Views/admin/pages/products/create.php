@@ -70,43 +70,47 @@
                                             required></textarea>
                                     </div>
                                 </div>
-
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="features">Features</label>
-                                        <textarea name="features" class="form-control" id="features"></textarea>
+                                        <label for="specification">Specifications</label>
+                                        <textarea name="specification" class="form-control"
+                                            id="specification"></textarea>
                                     </div>
                                 </div>
-
                                 <div class="col-md-4">
-                                <div class="form-group">
-    <label for="product_category">Select Product Category</label>
-    <select name="subsubcategory_id" class="form-control" id="product_category" required>
-        <option value="">Select Category</option>
-        <?php foreach ($categories as $category): ?>
-            <optgroup label="<?= esc($category['name']) ?>">
-                <?php foreach ($category['subcategories'] as $subcategory): ?>
-                    <optgroup label="-- <?= esc($subcategory['name']) ?>">
-                        <?php foreach ($subcategory['subsubcategories'] as $subsubcategory): ?>
-                            <option value="<?= esc($subsubcategory['id']) ?>" 
-                                data-category-id="<?= esc($category['id']) ?>" 
-                                data-subcategory-id="<?= esc($subcategory['id']) ?>">
-                                --- <?= esc($subsubcategory['name']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </optgroup>
-                <?php endforeach; ?>
-            </optgroup>
-        <?php endforeach; ?>
-    </select>
-    <!-- Hidden fields to hold the category and subcategory IDs -->
-    <input type="hidden" name="category_id" id="category_id">
-    <input type="hidden" name="subcategory_id" id="subcategory_id">
+    <div class="form-group">
+        <label for="category-hierarchy" class="form-label">Select Product Category</label>
+        <select id="category-hierarchy" name="category_hierarchy" class="form-control">
+            <option value="">Select Category</option>
+            <?php foreach ($categories as $category): ?>
+                <option value="<?= $category['id']; ?>" data-category-id="<?= $category['id']; ?>" data-level="1">
+                    <?= $category['name']; ?>
+                </option>
+
+                <?php if (!empty($category['subcategories'])): ?>
+                    <?php foreach ($category['subcategories'] as $subcategory): ?>
+                        <option value="<?= $subcategory['id']; ?>" data-category-id="<?= $category['id']; ?>" data-level="2" data-subcategory-id="<?= $subcategory['id']; ?>">
+                            &nbsp;&nbsp;— <?= $subcategory['name']; ?>
+                        </option>
+
+                        <?php if (!empty($subcategory['subsubcategories'])): ?>
+                            <?php foreach ($subcategory['subsubcategories'] as $subsubcategory): ?>
+                                <option value="<?= $subsubcategory['id']; ?>" data-category-id="<?= $category['id']; ?>" data-level="3" data-subcategory-id="<?= $subcategory['id']; ?>">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;— <?= $subsubcategory['name']; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </select>
+
+        <!-- Hidden inputs for each level -->
+        <input type="hidden" name="category_id" id="category_id">
+        <input type="hidden" name="subcategory_id" id="subcategory_id">
+        <input type="hidden" name="subsubcategory_id" id="subsubcategory_id">
+    </div>
 </div>
-
-
-
-                                </div>
 
 
 
@@ -116,7 +120,8 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="image">Main Product Image</label>
-                                        <input type="file" name="image" class="form-control-file" id="image" required>
+                                        <input type="file" name="image" class="form-control-file" id="image"
+                                            accept="image/*" required>
                                     </div>
                                 </div>
 
@@ -124,7 +129,7 @@
                                     <div class="form-group">
                                         <label for="sideview_images">Side View Images</label>
                                         <input type="file" name="sideview_images[]" class="form-control-file"
-                                            id="sideview_images" multiple>
+                                            id="sideview_images" accept="image/*" multiple>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -170,15 +175,34 @@
     <script>
 
         CKEDITOR.replace('description');
-        CKEDITOR.replace('features');
+        CKEDITOR.replace('specification');
 
+document.getElementById('category-hierarchy').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const selectedValue = selectedOption.value;
+    const level = selectedOption.getAttribute('data-level');
+    const categoryId = selectedOption.getAttribute('data-category-id');
+    const subcategoryId = selectedOption.getAttribute('data-subcategory-id');
 
-    document.getElementById('product_category').addEventListener('change', function() {
-        var selectedOption = this.options[this.selectedIndex];
-        document.getElementById('category_id').value = selectedOption.getAttribute('data-category-id');
-        document.getElementById('subcategory_id').value = selectedOption.getAttribute('data-subcategory-id');
-    });
+    // Clear hidden fields
+    document.getElementById('category_id').value = '';
+    document.getElementById('subcategory_id').value = '';
+    document.getElementById('subsubcategory_id').value = '';
+
+    // Set the correct hidden input based on selection level
+    if (level === '1') {
+        document.getElementById('category_id').value = selectedValue;
+    } else if (level === '2') {
+        document.getElementById('subcategory_id').value = selectedValue;
+        document.getElementById('category_id').value = categoryId; // Set category ID for subcategory
+    } else if (level === '3') {
+        document.getElementById('subsubcategory_id').value = selectedValue;
+        document.getElementById('subcategory_id').value = subcategoryId; // Set subcategory ID for subsubcategory
+        document.getElementById('category_id').value = categoryId; // Set category ID for subsubcategory
+    }
+});
 </script>
+   
 
     <?= $this->endSection() ?>
 

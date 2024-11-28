@@ -1,7 +1,7 @@
 <?= $this->extend('admin/layout/pages-layout') ?>
 <?= $this->section('content') ?>
 
-<div class="container mt-5">
+<div class="container">
 <div class="page-header ">
         <div class="row">
             <div class="col-md-6 col-sm-12">
@@ -35,7 +35,7 @@
 
         <div class="form-group">
             <label for="description">Description</label>
-            <textarea name="description" class="form-control" rows="4" required></textarea>
+            <textarea id="editor" name="description" class="form-control" rows="4" required></textarea>
         </div>
 
         <div class="form-group">
@@ -44,12 +44,22 @@
         </div>
 
         <button type="submit" class="btn btn-success">Create</button>
-        <a href="/blogs" class="btn btn-secondary">Back</a>
+<a href="<?= base_url('/admin/blogs/') ?>" class="btn btn-secondary">Back</a>
     </form>
 </div>
 
-
 </div>
+    <?= $this->section('scripts') ?>
 
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+ <script src="https://cdn.ckeditor.com/4.20.0/standard/ckeditor.js"></script>
+
+ <script>
+   CKEDITOR.replace( 'description' );
+</script>
+
+
+<?= $this->endSection() ?>
 <?= $this->endSection() ?>
 

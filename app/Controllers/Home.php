@@ -10,7 +10,6 @@ class Home extends BaseController
 {
     public function index()
     {
-        // $categories = $this->getCategories();
         $currency = getenv('CURRENCY') ?? 'Ksh';
 
         $productModel = new ProductModel();

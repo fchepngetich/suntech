@@ -8,13 +8,32 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class CartController extends BaseController
 {
+
+
     public function __construct()
     {
+	helper('CustomHelper');
         session();
     }
-   
+   function quote_smart($string)
+{
+    $string = html_entity_decode($string);
+    $string = strip_tags($string);
+    $string = trim($string);
+    $string = htmlentities($string);
+    $string = preg_replace('/\s+/', ' ',$string); // Removing more than one space/Tab.
+
+    // Quote if not integer
+    if (!is_numeric($string)) 
+    {
+        $string = mysql_real_escape_string($string);
+    }
+
+    return $string;
+}
     public function addToCart($productId)
     {
+
         try {
             $productModel = new ProductModel();
             $product = $productModel->find($productId);
@@ -29,7 +48,8 @@ class CartController extends BaseController
                 'id'      => $product['id'],
                 'qty'     => $quantity,
                 'price'   => $product['price'],
-                'name'    => $product['name'],
+                'name'    => quote_smart($product['name']),
+
                 'options' => ['image' => $product['image']]
             ];
     

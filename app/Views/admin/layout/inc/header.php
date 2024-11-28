@@ -22,7 +22,6 @@
                     <span class="user-name mr-1"><?= esc($full_name) ?></span>
                 </a>
 
-
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
                     <a class="dropdown-item" href="<?= base_url('/admin/profile') ?>"><i class="dw dw-user"></i>
                         Profile</a>

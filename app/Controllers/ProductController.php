@@ -9,6 +9,7 @@ use App\Models\CategoryModel;
 use App\Models\SubcategoryModel;
 use App\Models\SubsubcategoryModel;
 use App\Models\BlogModel;
+use App\Models\ReviewModel;
 
 class ProductController extends BaseController
 {
@@ -22,8 +23,7 @@ class ProductController extends BaseController
 
     public function index()
     {
-        $full_name = 'Faith';
-        $data['full_name'] = $full_name;
+        
 
         $productsModel = new ProductModel();
         $categoryModel = new CategoryModel();
@@ -35,7 +35,7 @@ class ProductController extends BaseController
         }
 
         $data['products'] = $products;
-
+        $data['full_name'] = getLoggedInUserName();
         return view('admin/pages/products/products.php', $data);
     }
 
@@ -114,9 +114,20 @@ public function getCategoryAndSubcategory($subcategoryId)
         $subcategories = $subcategoryModel->where('category_id', $categoryId)->findAll();
         return $this->response->setJSON($subcategories);
     }
-
+    public function generateCaptchaString($length = 5) {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        $captcha = '';
+        for ($i = 0; $i < $length; $i++) {
+            $captcha .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        return $captcha;
+    }
     public function details($slug)
     {
+
+        $captchaString = $this->generateCaptchaString();
+        session()->set('captcha', $captchaString);
+
         $product = $this->productModel->where('slug', $slug)->first();
         if (!$product) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Product not found');
@@ -171,10 +182,68 @@ public function getCategoryAndSubcategory($subcategoryId)
     
         $data['product'] = $product;
         $data['productInCart'] = $productInCart;
+        $data['captcha'] = $captchaString;
     
         return view('backend/pages/products/product-detail', $data);
     }
+    public function submitReview()
+    {
+        $request = service('request');
+        $validation = \Config\Services::validation();
+        $logger = \Config\Services::logger();
+        $captchaInput = $request->getPost('captcha');
+        $storedCaptcha = session()->get('captcha');
     
+        if ($captchaInput !== $storedCaptcha) {
+            // Handle the error case: captcha validation failed
+            return redirect()->back()->with('error', 'The letters you entered do not match. Please try again.');
+        }
+        $logger->info("Review submission started.");
+    
+        // Set validation rules, including product_id
+        $validation->setRules([
+            'product_id' => 'required|integer',
+            'name' => 'required|min_length[3]|max_length[50]',
+            'email' => 'required|valid_email',
+            'phone' => 'required|regex_match[/^\d{10,15}$/]',
+            'text' => 'required',
+            'rating' => 'required|in_list[1,2,3,4,5]'
+        ]);
+    
+        if (!$validation->withRequest($request)->run()) {
+            $errors = $validation->getErrors();
+            $logger->error("Validation failed", $errors); // Log validation errors
+            return redirect()->back()->withInput()->with('errors', $errors);
+        }
+    
+        $logger->info("Validation passed.");
+    
+        $data = [
+            'product_id' => $request->getPost('product_id'),
+            'name' => $request->getPost('name'),
+            'email' => $request->getPost('email'),
+            'phone' => $request->getPost('phone'),
+            'review' => $request->getPost('text'),
+            'rating' => $request->getPost('rating')
+        ];
+    
+        $logger->info("Data collected for insertion", $data);
+    
+        $reviewModel = new ReviewModel();
+        if ($reviewModel->insert($data)) {
+            $logger->info("Review inserted successfully.");
+            session()->remove('captcha');
+            return redirect()->back()->with('success', 'Review submitted successfully,awaiting approval!');
+
+        } else {
+            $error = $reviewModel->errors();
+            $logger->error("Failed to insert review.", ['model_errors' => $error]); 
+            return redirect()->back()->with('error', 'Failed to submit review.');
+        }
+    }
+    
+    
+
 
     
     
@@ -223,10 +292,11 @@ public function getCategoryAndSubcategory($subcategoryId)
     //     $data['productInCart'] = $productInCart; 
     //     return view('backend/pages/products/product-detail', $data);
     // }
+
+
     public function create()
     {
-        $full_name = 'Faith';
-        $data['full_name'] = $full_name;
+        $full_name = getLoggedInUserName();
     
         // Fetch categories with subcategories and subsubcategories
         $categoryModel = new CategoryModel();
@@ -288,15 +358,15 @@ public function getCategoryAndSubcategory($subcategoryId)
     public function store()
     {
         $validation = $this->validate([
-            'name' => 'required|min_length[3]|max_length[255]',
+            'name' => 'required',
             'description' => 'required',
             'price' => 'required|decimal',
             'discounted_price' => 'permit_empty|decimal',
             'stock' => 'required|integer',
-            'category_id' => 'required|integer',
-            'subcategory_id' => 'required|integer',
-            'subsubcategory_id' => 'required|integer', 
-            'image' => 'uploaded[image]|max_size[image,2048]|is_image[image]|ext_in[image,jpg,jpeg,png]', 
+            'category_id' => 'permit_empty|integer',
+            'subcategory_id' => 'permit_empty|integer',
+            'subsubcategory_id' => 'permit_empty|integer',
+            'image' => 'uploaded[image]|max_size[image,2048]|is_image[image]|ext_in[image,jpg,jpeg,png]',
             'sideview_images' => 'permit_empty',
         ]);
     
@@ -328,17 +398,24 @@ public function getCategoryAndSubcategory($subcategoryId)
     
         $slug = url_title($this->request->getPost('name'), '-', true);
         $slug = $this->generateUniqueSlug($slug);
+
+        $categoryId = $this->request->getPost('category_id');
+        $subcategoryId = $this->request->getPost('subcategory_id');
+        $subsubcategoryId = $this->request->getPost('subsubcategory_id');
+        log_message('info', 'Category ID: ' . $categoryId);
+        log_message('info', 'Subcategory ID: ' . $subcategoryId);
+        log_message('info', 'Subsubcategory ID: ' . $subsubcategoryId);
     
         $productData = [
             'name' => $this->request->getPost('name'),
             'description' => $this->request->getPost('description'),
-            'features' => $this->request->getPost('features'),
+            'specifications' => $this->request->getPost('specification'),
             'price' => $this->request->getPost('price'),
             'discounted_price' => $this->request->getPost('discounted_price'),
             'stock' => $this->request->getPost('stock'),
-            'category_id' => $this->request->getPost('category_id'), // Get category ID from hidden field
-            'subcategory_id' => $this->request->getPost('subcategory_id'), // Get subcategory ID from hidden field
-            'subsubcategory_id' => $this->request->getPost('subsubcategory_id'), // Get subsubcategory ID from select
+            'category_id' => $categoryId,
+            'subcategory_id' => $subcategoryId,
+            'subsubcategory_id' => $subsubcategoryId ?: null,  
             'image' => $imageName,
             'sideview_images' => json_encode($sideviewImages),
             'is_top_deal' => $this->request->getPost('is_top_deal') == '1',
@@ -376,7 +453,7 @@ public function getCategoryAndSubcategory($subcategoryId)
 
     public function edit($slug)
     {
-        $full_name = 'Faith';
+        $full_name = getLoggedInUserName();
         $productsModel = new ProductModel();
         $product = $productsModel->where('slug', $slug)->first();
     
@@ -401,14 +478,14 @@ public function getCategoryAndSubcategory($subcategoryId)
     {
         // Validate incoming data
         $validation = $this->validate([
-            'name' => 'required|min_length[3]|max_length[255]',
+            'name' => 'required',
             'description' => 'required',
             'price' => 'required|decimal',
             'discounted_price' => 'permit_empty|decimal',
             'stock' => 'required|integer',
-            'category_id' => 'required|integer',
-            'subcategory_id' => 'required|integer',
-            'subsubcategory_id' => 'required|integer', // Ensure this is included for the dropdown
+            'category_id' => 'permit_empty|integer',
+            'subcategory_id' => 'permit_empty|integer',
+            'subsubcategory_id' => 'permit_empty|integer',
             'image' => 'permit_empty|uploaded[image]|max_size[image,2048]|is_image[image]|ext_in[image,jpg,jpeg,png]',
             'sideview_images' => 'permit_empty',
         ]);
@@ -482,13 +559,13 @@ public function getCategoryAndSubcategory($subcategoryId)
         $productData = [
             'name' => $this->request->getPost('name'),
             'description' => $this->request->getPost('description'),
-            'features' => $this->request->getPost('features'),
+            'specifications' => $this->request->getPost('specification'),
             'price' => $this->request->getPost('price'),
             'discounted_price' => $this->request->getPost('discounted_price'),
             'stock' => $this->request->getPost('stock'),
             'category_id' => $this->request->getPost('category_id'),
             'subcategory_id' => $this->request->getPost('subcategory_id'),
-            'subsubcategory_id' => $this->request->getPost('subsubcategory_id'),
+            'subsubcategory_id' => $this->request->getPost('subsubcategory_id') ?: null,
             'image' => $imageName,
             'sideview_images' => json_encode($sideviewImages),
             'is_top_deal' => $this->request->getPost('is_top_deal') == '1',

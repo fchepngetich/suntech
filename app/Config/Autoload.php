@@ -94,5 +94,5 @@ class Autoload extends AutoloadConfig
      *
      * @var list<string>
      */
-    public $helpers = ['breadcrumbs'];
+    public $helpers = ['breadcrumbs','image','User'];
 }

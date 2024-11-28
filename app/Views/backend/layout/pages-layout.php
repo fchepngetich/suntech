@@ -54,7 +54,9 @@
 <?php
 $categoryModel = new \App\Models\CategoryModel();
 $categories = $categoryModel->getCategoriesWithSubcategoriesAndProducts();
-echo view('backend/layout/inc/header', ['categories' => $categories]);
+$menuModel = new \App\Models\MenuModel();
+$menus = $menuModel->findAll();
+echo view('backend/layout/inc/header', ['categories' => $categories, 'menus' => $menus]);
 ?>
 
     <div class="mobile-menu-overlay"></div>

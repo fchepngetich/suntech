@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-md-12">
             <img class="img-fluid" src="<?= base_url($blog['image']); ?>" alt="Blog Image" style="float: left; margin-right: 15px;">
-            <p class=""><?= esc($blog['description']); ?></p>
+<p><?= nl2br(html_entity_decode(strip_tags($blog['description']))); ?></p>
             <a href="<?= base_url('/blogs'); ?>" class="btn btn-primary mt-3">Back to Blogs</a>
         </div>
     </div>

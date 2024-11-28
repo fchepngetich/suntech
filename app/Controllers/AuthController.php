@@ -102,20 +102,20 @@ class AuthController extends BaseController
     
 private function performLogin($model, $email, $password, $loginType)
 {
-    // Query user by email
+    
     $userInfo = $model->where('email', $email)->first();
     if (!$userInfo) {
         log_message('error', "User not found for email: {$email}");
         return redirect()->back()->with('fail', 'User does not exist')->withInput();
     }
 
-    // Verify password
+ 
     if (!password_verify($password, $userInfo['password'])) {
         log_message('error', "Password mismatch for user: {$email}");
         return redirect()->back()->with('fail', 'Wrong password')->withInput();
     }
 
-    // Set session data
+    
     $sessionData = [
         'user_id'   => $userInfo['id'],
         'email'     => $userInfo['email'],
@@ -126,7 +126,7 @@ private function performLogin($model, $email, $password, $loginType)
 
     log_message('info', "Login successful for {$loginType}: {$email}");
 
-    // Redirect based on login type
+   
     return ($loginType === 'admin') 
         ? redirect()->to(base_url('/admin'))->with('success', 'Admin login successful')
         : redirect()->to(base_url('/'))->with('success', 'User login successful');
@@ -176,13 +176,6 @@ public function userLoginHandler()
         return redirect()->back()->with('fail', 'An unexpected error occurred')->withInput();
     }
 }
-
-
-
-  
-    
-   
-    
     
     public function forgotPassword()
     {
@@ -347,7 +340,7 @@ $userModel->update($user['id'], [
             'pageTitle' => 'Change Password',
 
         );
-        return view('backend/pages/auth/change_password', $data);
+        return view('admin/pages/auth/change_password', $data);
     }
   public function logoutHandler()
     {

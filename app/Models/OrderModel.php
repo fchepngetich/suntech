@@ -8,18 +8,7 @@ class OrderModel extends Model
 {
     protected $table            = 'orders';
     protected $primaryKey       = 'id';
-    protected $allowedFields = [
-        'user_id',
-        'phone',
-        'additional_phone',
-        'address1',
-        'address2',
-        'region',
-        'city_id',
-        'delivery_method',
-        'payment_method',
-        'created_at', 
-        'updated_at'
-    ];
+    protected $allowedFields = ['transaction_id', 'amount', 'phone', 'status', 'created_at']; // Fields that can be inserted
 
+    protected $useTimestamps = true;
 }

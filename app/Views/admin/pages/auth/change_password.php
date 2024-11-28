@@ -1,4 +1,4 @@
-<?= $this->extend('backend/layout/pages-layout') ?>
+<?= $this->extend('admin/layout/pages-layout') ?>
 <?= $this->section('content') ?>
     <div class="container ">
           <div class="page-header ">
@@ -26,61 +26,67 @@
   
        <div class="row ">
          <div class="col-md-6 login-box">
-            <form action="<?= base_url('admin/change-password') ?>" method="POST">
-        <?= csrf_field() ?>
-        
-        <?php if (session()->getFlashdata('success')) : ?>
-            <div class="alert alert-success">
-                <?= session()->getFlashdata('success') ?>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        <?php endif; ?>
+         <?php if (session()->get('success')) : ?>
+    <div class="toast toast-success">
+        <?= esc(session()->get('success')) ?>
+    </div>
+<?php endif; ?>
 
-        <?php if (session()->getFlashdata('fail')) : ?>
-            <div class="alert alert-danger">
-                <?= session()->getFlashdata('fail') ?>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        <?php endif; ?>
+<?php if (session()->get('fail')) : ?>
+    <div class="toast toast-error">
+        <?= esc(session()->get('fail')) ?>
+    </div>
+<?php endif; ?>
 
-        <div class="input-group custom">
-            <input type="password" class="form-control form-control-lg" id="current_password" name="current_password" placeholder="Current Password" required>
-            <div class="input-group-append custom">
-                <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
+<script>
+    setTimeout(() => {
+        document.querySelectorAll('.toast').forEach(toast => toast.remove());
+    }, 5000); // Remove after 5 seconds
+</script>
+
+         <form action="<?= base_url('admin/change-password') ?>" method="POST" id="passwordForm">
+    <?= csrf_field() ?>
+
+    <div id="global-error" class="alert alert-danger" style="display: none;"></div>
+
+    <div class="input-group custom">
+        <input type="password" class="form-control form-control-lg" id="current_password" name="current_password" placeholder="Current Password" required>
+        <div class="input-group-append custom">
+            <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
+        </div>
+        <div id="current_password_error" class="text-danger small"></div>
+    </div>
+
+    <div class="input-group custom">
+        <input type="password" class="form-control form-control-lg" id="new_password" name="new_password" placeholder="New Password" required>
+        <div class="input-group-append custom">
+            <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
+        </div>
+        <div id="new_password_error" class="text-danger small"></div>
+    </div>
+
+    <div class="input-group custom">
+        <input type="password" class="form-control form-control-lg" id="confirm_password" name="confirm_password" placeholder="Confirm New Password" required>
+        <div class="input-group-append custom">
+            <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
+        </div>
+        <div id="confirm_password_error" class="text-danger small"></div>
+    </div>
+
+    <div class="form-group mt-2">
+        <input type="checkbox" id="show_passwords" onclick="togglePasswordVisibility()"> 
+        <label for="show_passwords">Show Passwords</label>
+    </div>
+
+    <div class="row align-items-center">
+        <div class="col-12">
+            <div class="input-group mb-0">
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Change Password</button>
             </div>
         </div>
+    </div>
+</form>
 
-        <div class="input-group custom">
-            <input type="password" class="form-control form-control-lg" id="new_password" name="new_password" placeholder="New Password" required>
-            <div class="input-group-append custom">
-                <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
-            </div>
-        </div>
-
-        <div class="input-group custom">
-            <input type="password" class="form-control form-control-lg" id="confirm_password" name="confirm_password" placeholder="Confirm New Password" required>
-            <div class="input-group-append custom">
-                <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
-            </div>
-        </div>
-
-        <div class="form-group mt-2">
-            <input type="checkbox" id="show_passwords" onclick="togglePasswordVisibility()"> 
-            <label for="show_passwords">Show Passwords</label>
-        </div>
-
-        <div class="row align-items-center">
-            <div class="col-12">
-                <div class="input-group mb-0">
-                    <input class="btn btn-primary btn-lg btn-block" type="submit" value="Change Password">
-                </div>
-            </div>
-        </div>
-    </form>
 
     </div>
          <div class="col-md-6 login-box">

@@ -74,43 +74,44 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="features">Features</label>
-                                        <textarea name="features" class="form-control"
-                                            id="features"><?= esc($product['features']) ?></textarea>
+                                        <label for="specification">Specifications</label>
+                                        <textarea name="specification" class="form-control"
+                                            id="specifications"><?= esc($product['specifications']) ?></textarea>
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="product_category">Select Product Category</label>
-                                        <select name="subsubcategory_id" class="form-control" id="product_category"
-                                            required>
+                                        <label for="category-hierarchy" class="form-label">Select Product Category</label>
+                                        <select id="category-hierarchy" name="category_hierarchy" class="form-control">
                                             <option value="">Select Category</option>
                                             <?php foreach ($categories as $category): ?>
-                                                <optgroup label="<?= esc($category['name']) ?>">
+                                                <option value="<?= $category['id'] ?>" data-level="1" <?= $category['id'] == $product['category_id'] ? 'selected' : '' ?>>
+                                                    <?= $category['name'] ?>
+                                                </option>
+                                                <?php if (!empty($category['subcategories'])): ?>
                                                     <?php foreach ($category['subcategories'] as $subcategory): ?>
-                                                    <optgroup label="-- <?= esc($subcategory['name']) ?>">
-                                                        <?php foreach ($subcategory['subsubcategories'] as $subsubcategory): ?>
-                                                            <option value="<?= esc($subsubcategory['id']) ?>"
-                                                                data-category-id="<?= esc($category['id']) ?>"
-                                                                data-subcategory-id="<?= esc($subcategory['id']) ?>"
-                                                                <?= ($subsubcategory['id'] == $product['subsubcategory_id']) ? 'selected' : '' ?>>
-                                                                --- <?= esc($subsubcategory['name']) ?>
-                                                            </option>
-                                                        <?php endforeach; ?>
-                                                    </optgroup>
-                                                <?php endforeach; ?>
-                                                </optgroup>
+                                                        <option value="<?= $subcategory['id'] ?>" data-level="2" data-category-id="<?= $category['id'] ?>" <?= $subcategory['id'] == $product['subcategory_id'] ? 'selected' : '' ?>>
+                                                            &nbsp;&nbsp;— <?= $subcategory['name'] ?>
+                                                        </option>
+                                                        <?php if (!empty($subcategory['subsubcategories'])): ?>
+                                                            <?php foreach ($subcategory['subsubcategories'] as $subsubcategory): ?>
+                                                                <option value="<?= $subsubcategory['id'] ?>" data-level="3" data-category-id="<?= $category['id'] ?>"
+                                                                    <?= $subsubcategory['id'] == $product['subsubcategory_id'] ? 'selected' : '' ?>>
+                                                                     &nbsp;&nbsp;&nbsp;&nbsp;— <?= $subsubcategory['name'] ?>
+                                                                </option>
+                                                            <?php endforeach; ?>
+                                                        <?php endif; ?>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
                                             <?php endforeach; ?>
                                         </select>
-                                        <!-- Hidden fields to hold the category and subcategory IDs -->
-                                        <input type="hidden" name="category_id" id="category_id"
-                                            value="<?= esc($product['category_id']) ?>">
-                                        <input type="hidden" name="subcategory_id" id="subcategory_id"
-                                            value="<?= esc($product['subcategory_id']) ?>">
+                                        <input type="hidden" name="category_id" id="category_id" value="<?= esc($product['category_id']) ?>">
+                                        <input type="hidden" name="subcategory_id" id="subcategory_id" value="<?= esc($product['subcategory_id']) ?>">
+                                        <input type="hidden" name="subsubcategory_id" id="subsubcategory_id" value="<?= esc($product['subsubcategory_id']) ?>">
                                     </div>
-
                                 </div>
+
 
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -120,18 +121,18 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-    <div class="form-group">
-        <label for="image">Main Product Image</label>
-        <input type="file" name="image" class="form-control-file" id="image">
-        <small>Current Image: <?= esc($product['image']) ?></small> <!-- Show the image name -->
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="remove_main_image" value="1" id="removeMainImage">
-            <label class="form-check-label" for="removeMainImage">
-                Remove this image
-            </label>
-        </div>
-    </div>
-</div>
+                                    <div class="form-group">
+                                        <label for="image">Main Product Image</label>
+                                        <input type="file" name="image" class="form-control-file" id="image">
+                                        <small>Current Image: <?= esc($product['image']) ?></small> <!-- Show the image name -->
+                                                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="remove_main_image" value="1" id="removeMainImage">
+                                            <label class="form-check-label" for="removeMainImage">
+                                                Remove this image
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
 
 <div class="col-md-4">
     <div class="form-group">
@@ -196,19 +197,33 @@
 
     <script>
           CKEDITOR.replace('description');
-          CKEDITOR.replace('features');
+          CKEDITOR.replace('specifications');
 
-        document.getElementById('product_category').addEventListener('change', function () {
-            var selectedOption = this.options[this.selectedIndex];
-            document.getElementById('category_id').value = selectedOption.getAttribute('data-category-id');
-            document.getElementById('subcategory_id').value = selectedOption.getAttribute('data-subcategory-id');
+  
+
+        // JavaScript for handling category and subcategory selections
+        document.getElementById('category-hierarchy').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const selectedValue = selectedOption.value;
+            const level = selectedOption.getAttribute('data-level');
+            const categoryId = selectedOption.getAttribute('data-category-id');
+            const subcategoryId = selectedOption.getAttribute('data-subcategory-id');
+
+            document.getElementById('category_id').value = '';
+            document.getElementById('subcategory_id').value = '';
+            document.getElementById('subsubcategory_id').value = '';
+
+            if (level === '1') {
+                document.getElementById('category_id').value = selectedValue;
+            } else if (level === '2') {
+                document.getElementById('subcategory_id').value = selectedValue;
+                document.getElementById('category_id').value = categoryId;
+            } else if (level === '3') {
+                document.getElementById('subsubcategory_id').value = selectedValue;
+                document.getElementById('subcategory_id').value = subcategoryId;
+                document.getElementById('category_id').value = categoryId;
+            }
         });
-
-        var preselectedOption = document.querySelector('option[selected]');
-        if (preselectedOption) {
-            document.getElementById('category_id').value = preselectedOption.getAttribute('data-category-id');
-            document.getElementById('subcategory_id').value = preselectedOption.getAttribute('data-subcategory-id');
-        }
     </script>
 
     <?= $this->endSection() ?>

@@ -31,7 +31,7 @@
                                 <?php foreach ($wishlistProducts as $item): ?>
                                     <tr>
                                         <td class="image" data-title="No">
-                                            <img src="<?= base_url('/backend/images/' . $item['image']) ?>"
+                                            <img src="<?= get_image_url($product['image']); ?>"
                                                 alt="<?= esc($item['name']) ?>">
                                         </td>
                                         <td class="product-des" data-title="Description">

@@ -60,7 +60,7 @@
                             <div class="col-lg-3 col-md-6 col-12 mb-4">
                                 <div class="card">
                                     <a href="<?= base_url('products/details/' . $product['slug']); ?>" class="">
-                                        <img class="card-img-top" src="<?= base_url('backend/images/' . $product['image']); ?>"
+                                        <img class="card-img-top" src="<?= get_image_url($product['image']); ?>"
                                             alt="<?= esc($product['name']); ?>">
                                         <div class="card-body">
                                             <h6 class="card-title"><?= esc($product['name']); ?></h6>

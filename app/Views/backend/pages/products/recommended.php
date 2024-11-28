@@ -3,75 +3,94 @@
     <?= $this->section('content') ?>
     <?php $currency = getenv('CURRENCY') ?? 'Ksh'; ?>
     <div class="container mt-3 mb-3">
-    <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <?php foreach ($breadcrumbs as $breadcrumb): ?>
-            <li class="breadcrumb-item">
-                <?php if (!empty($breadcrumb['url'])): ?>
-                    <a href="<?= esc($breadcrumb['url']); ?>"><?= esc($breadcrumb['name']); ?></a>
-                <?php else: ?>
-                    <span><?= esc($breadcrumb['name']); ?></span>
-                <?php endif; ?>
-            </li>
-        <?php endforeach; ?>
-    </ol>
-</nav>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <?php foreach ($breadcrumbs as $breadcrumb): ?>
+                    <li class="breadcrumb-item">
+                        <?php if (!empty($breadcrumb['url'])): ?>
+                            <a href="<?= esc($breadcrumb['url']); ?>"><?= esc($breadcrumb['name']); ?></a>
+                        <?php else: ?>
+                            <span><?= esc($breadcrumb['name']); ?></span>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ol>
+        </nav>
 
         <div class="row">
-        <div class="col-lg-3 col-md-4 col-12">
-            <?php include APPPATH . 'Views/backend/pages/sidebar.php'; ?>
+            <div class="col-lg-3 col-md-4 col-12">
+                <?php include APPPATH . 'Views/backend/pages/sidebar.php'; ?>
 
             </div>
 
             <div class="col-lg-9 col-md-8 col-12">
                 <h5 class="mb-3">Recommended Products</h5>
 
-                <div class="row">
-                    <?php foreach ($recommendedProducts as $product): ?>
-                        <div class="col-xl-3 col-lg-4 col-md-6 col-12 products">
-                            <div class="single-product card">
-                                <div class="product-img">
-                                    <a href="<?= base_url('products/details/' . $product['slug']) ?>">
-                                        <img class="default-img"
-                                            src="<?= base_url(relativePath: '/backend/images/' . $product['image']) ?>"
-                                            alt="#">
-                                        <img class="hover-img"
-                                            src="<?= base_url(relativePath: '/backend/images/' . $product['image']) ?>"
-                                            alt="#">
-                                    </a>
-                                    <div class="button-head">
-                                        <div class="product-action">
-
-                                            <a title="Wishlist" class="add-to-wishlist" data-id="<?= $product['id'] ?>"
-                                                href="#"><i class="ti-heart p-2"></i>
-                                                <span>Add to Wishlist</span></a>
-
+                <div class="row ">
+                    <?php if (!empty($recommendedProducts)): ?>
+                        <?php foreach ($recommendedProducts as $product): ?>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="card mb-4">
+                                    <div class="row no-gutters">
+                                        <!-- Product Image -->
+                                        <div class="col-12 col-sm-4">
+                                            <a href="<?= base_url('products/details/' . $product['slug']); ?>">
+                                                <img src="<?= get_image_url($product['image']); ?>" class="card-img"
+                                                    alt="<?= $product['name']; ?>">
+                                            </a>
                                         </div>
-                                        <div class="product-action-2">
-                                            <a title="Add to cart" class="btn-sm btn-danger add-to-cart"
-                                                data-id="<?= $product['id'] ?>" href="#">Add to cart</a>
+
+                                        <!-- Product Info -->
+                                        <div class="col-12 col-sm-8">
+                                            <div class="card-body">
+                                                <h5 class="card-title product-title">
+                                                    <a
+                                                        href="<?= base_url('products/details/' . $product['slug']); ?>"><?= $product['name']; ?></a>
+                                                </h5>
+                                                <p class="mt-2 mb-2"><?= substr($product['description'], 0, 100); ?>...</p>
+
+
+
+                                                <div class="product-price mb-2">
+                                                    <strong>
+                                                        <?= esc($currency) ?>
+                                                        <?= number_format(
+                                                            !empty($product['discounted_price']) && $product['discounted_price'] != 0
+                                                            ? $product['discounted_price']
+                                                            : $product['price'],
+                                                            0,
+                                                            '.',
+                                                            ','
+                                                        ); ?>
+                                                    </strong>
+                                                </div>
+
+
+                                                <p class="text-danger mt-3 mb-3">Price is inclusive of
+                                                    <strong><u>16%</u></strong> VAT</p>
+
+                                                <!-- Action Buttons -->
+                                                <div class="d-flex justify-content-between">
+                                                    <button type="button" class="btn-primary btn-sm add-to-cart"
+                                                        data-id="<?= $product['id'] ?>">Add to Cart <i
+                                                            class="fa fa-shopping-cart"></i></button>
+                                                    <button type="button" class="btn-outline-secondary btn-sm add-to-wishlist"
+                                                        data-id="<?= $product['id'] ?>">Wishlist <i
+                                                            class="fa fa-heart"></i></button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                    <!-- Manufacturer Info -->
+
                                 </div>
-                                <div class="product-content p-2">
-                                    <h3><a
-                                            href="<?= base_url('products/details/' . $product['slug']) ?>"><?= esc($product['name']) ?></a>
-                                    </h3>
-                                    <div class="product-price">
-                                        <span class="discounted-price"><?= esc($currency) ?>
-                                            <?= number_format(floor($product['discounted_price']), 0, '.', ',') ?></span>
-                                        <span class="original-price"><?= esc($currency) ?>
-                                            <?= number_format(floor($product['price']), 0, '.', ',') ?></span>
-                                    </div>
-                                    <hr class="line">
-                                </div>
-                                <!-- <div class="product-action-2 mb-2 text-center">
-                                    <a title="Add to cart" class="btn btn-danger add-to-cart"
-                                        data-id="<?= esc($product['id']) ?>" href="#">Add to cart</a>
-                                </div> -->
                             </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="col-12 text-center">
+                            <p>No products found.</p>
                         </div>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

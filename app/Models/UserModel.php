@@ -8,9 +8,10 @@ class UserModel extends Model
 {
     protected $table = 'users';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['username', 'email', 'password','additionalPhone', 'address1', 'address2', 'region', 'city'];
+    protected $allowedFields = ['username', 'email', 'password','additionalPhone', 'address1', 'address2', 'region', 'city','billing_address' ,
+    'billing_phone'];
     protected $useTimestamps = true; 
-
+     
     // Add a method to find user by email
     public function getUserByEmail($email)
     {

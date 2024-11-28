@@ -340,11 +340,40 @@ Version:1.0
 
 
 }
+
 /* Mobile Screen */
 @media only screen and (max-width: 767px) {
-.breadcrumbs {
+	.justify-content-end {
+		-ms-flex-pack: center !important;
+		justify-content: center !important;
+		margin:0px 0px 10px 0px !important;	;
+
+	}
+	.right-bars {
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+    }
+
+    .right-bars .sinlge-bar {
+        margin: 0;
+    }
+
+    .right-bars .single-icon span {
+        font-size: 12px !important;
+		color: #F7941D;
+    }
+	.category-select {
+        display: none !important; 
+    }
+	.top-bar-nav{display: none;}
+	.hide-on-mobile {
+        display: none !important;
+    }.breadcrumbs {
 	padding: 90px 0 90px;
 }
+.slicknav_nav{color:#000 !important;margin-bottom:20px;}
+.single-bar .pl-1{color:#000 !important}
 .breadcrumbs h2 {
 	font-size: 28px;
 }
@@ -367,6 +396,7 @@ Version:1.0
 	padding-bottom: 20px;
 	background: #333;
 }
+.header.shop .right-bar {top:0px !important}
 .slicknav_menu{
 	display:block;
 }
@@ -457,9 +487,9 @@ Version:1.0
 .slicknav_nav li .new {
 	display:none !important;
 }
-.header.shop .search-bar-top {
+/* .header.shop .search-bar-top {
 	display: none;
-}
+} */
 .header.shop .right-bar {
 	display: none;
 }
@@ -570,7 +600,7 @@ Version:1.0
 	font-size: 12px;
 }
 .hero-area3 .big-content {
-	height: 300px;
+	/* height: 300px; */
 	margin-top: 16px;
 }
 .hero-area3 .big-content .inner {
@@ -1058,8 +1088,8 @@ Version:1.0
 .quickview-content .add-to-cart .btn.min {
 	line-height: 41px;
 }
-
-
+.breadcrumb{display: none;}
+.search-cat{display:none !important}
 
 
 }
@@ -1170,9 +1200,9 @@ Version:1.0
 .shop.single {
 	padding: 20px 0 30px 0;
 }
-.header.shop .search-bar-top {
+/* .header.shop .search-bar-top {
 	display: none;
-}
+} */
 .header.shop .right-bar {
 	display: none;
 }
@@ -1245,8 +1275,10 @@ Version:1.0
 	border-top: 1px solid #ffffff87;
 }
 .header.shop .search-bar {
-	width: 445px;
+	width: 350px;
+	height: 40px;
 }
+.header.shop .search-bar .btnn {height: 40px; right: 4px;width: 50px;}
 .header.shop .search-bar input {
 	padding: 0 52px 0 20px;
 	width: 264px;
@@ -1454,7 +1486,6 @@ Version:1.0
 }
 .shop .nice-select {
 	width: 100%;
-	display: ;
 	margin-top: 4px;
 }
 .shop .view-mode {
@@ -1468,12 +1499,11 @@ Version:1.0
 	margin-right: 5px;
 	display: inline-block;
 	margin: 0;
-	mar0-t: mar;
 	margin-top: 4px;
 	width: 100%;
 	display: block;
 	display: inline-block;
-	display: ;
+	
 }
 .shop .view-mode li a {
 	width: 80px;

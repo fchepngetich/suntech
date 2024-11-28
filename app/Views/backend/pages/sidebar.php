@@ -18,7 +18,7 @@
 
             <img src="<?= base_url($blog['image']); ?>" alt="<?= esc($blog['title']); ?>">
         </div>
-        <div class="content">
+        <div class="content mt-2">
             <h5><a href="<?= base_url('blogs/show/' . $blog['id']); ?>"><?= esc($blog['title']); ?></a></h5>
             
             <ul class="comment">

@@ -24,7 +24,7 @@
                                                 <div class="row">
                                                     <div class="col-md-2">
                                                         <a class="cart-img" href="#">
-                                                            <img src="<?= base_url('/backend/' . $item['options']['image']) ?>"
+                                                            <img src="<?= base_url('public/backend/' . $item['options']['image']) ?>"
                                                                 alt="<?= esc($item['name']) ?>">
                                                         </a>
                                                     </div>

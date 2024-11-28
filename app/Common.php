@@ -15,28 +15,22 @@
  */
 
 
-// if (!function_exists('generate_breadcrumb')) {
-//     function generate_breadcrumb($segments = [])
-//     {
-//         $output = '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
-
-//         // Home link
-//         $output .= '<li class="breadcrumb-item"><a href="' . base_url() . '">Home</a></li>';
-
-//         // Generate other breadcrumbs
-//         $segment_url = '';
-//         foreach ($segments as $key => $segment) {
-//             $segment_url .= '/' . $segment['url'];
-//             if ($key === count($segments) - 1) {
-//                 // Last segment (active)
-//                 $output .= '<li class="breadcrumb-item active" aria-current="page">' . esc($segment['name']) . '</li>';
-//             } else {
-//                 // Intermediate segments (links)
-//                 $output .= '<li class="breadcrumb-item"><a href="' . base_url($segment_url) . '">' . esc($segment['name']) . '</a></li>';
-//             }
-//         }
-
-//         $output .= '</ol></nav>';
-//         return $output;
-//     }
-// }
+ use App\Models\AdminModel;
+ 
+ if (!function_exists('getLoggedInUserName')) {
+     function getLoggedInUserName()
+     {
+         $session = session();
+         $userId = $session->get('user_id');
+ 
+         if (!$userId) {
+             return 'Guest';
+         }
+ 
+         $userModel = new AdminModel();
+         $user = $userModel->find($userId);
+ 
+         return $user ? $user['username'] : 'Guest';
+     }
+ }
+ 

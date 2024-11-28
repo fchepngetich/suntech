@@ -11,17 +11,32 @@
         <h5 class="capitalize mt-3 mb-3">Our Blogs</h5>
         <div class="row">
             <?php foreach ($blogs as $blog): ?>
-                <div class="col-lg-4 col-md-6 col-12">
+                <div class="col-lg-4 col-md-6 col-12 mt-3 mb-3">
                     <!-- Start Single Blog -->
                     <div class="shop-single-blog">
                         <img class="default-img" src="<?= base_url($blog['image']); ?>" alt="Blog Image">
 
                         <div class="content">
-                            <h6 class=""><?= esc($blog['title']); ?></h6>
-                            <p class="text"><?= esc(substr($blog['description'], 0, 100)); ?>...</p>
-                            <a href="<?= base_url('/blogs/show/' . $blog['id']); ?>" class="btn more-btn mt-2">Continue
-                                Reading</a>
-                        </div>
+
+<h6 class="mt-1 mb-1">
+    <?= esc(strlen($blog['title']) < 75 
+        ? $blog['title'] 
+        : substr($blog['title'], 0, 75) . '...'); ?>
+</h6>
+
+<p class="text">
+    <?= esc(
+        substr(
+            strip_tags($blog['description']), 
+            0, 
+            100
+        )
+    ); ?>...
+</p>
+
+<a href="<?= base_url('/blogs/show/' . $blog['id']); ?>" class="btn more-btn">Continue Reading</a>
+
+</div>
                     </div>
                     <!-- End Single Blog -->
                 </div>

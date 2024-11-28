@@ -28,26 +28,26 @@ $routes->group('admin', ['filter' => 'cifilter:admin'], function ($routes) {
         // $routes->post('categories/delete/(:num)', 'CategoryController::delete/$1');
 
     });
-    // $routes->group('categories', static function ($routes) {
-
-    //     $routes->get('', 'CategoryController::index');
-    //     $routes->get('add-category', 'CategoryController::create');
-    //     $routes->post('store', 'CategoryController::store');
-    //     $routes->get('edit/(:any)', 'CategoryController::edit/$1');
-    //     $routes->post('update/(:num)', 'CategoryController::update/$1');
-    //     $routes->post('delete/(:num)', 'CategoryController::delete/$1');
-
-    // });
-
     $routes->group('categories', static function ($routes) {
-        $routes->get('', 'CategoryController::index', ['as' => 'categories.index']); // List categories
-        $routes->get('create', 'CategoryController::create', ['as' => 'categories.create']); // Show create form
-        $routes->post('store', 'CategoryController::store', ['as' => 'categories.store']); // Save new category
-        $routes->get('edit/(:num)', 'CategoryController::edit/$1', ['as' => 'categories.edit']); // Show edit form
-        $routes->post('update/(:num)', 'CategoryController::update/$1', ['as' => 'categories.update']); // Update category
-        $routes->delete('delete/(:num)', 'CategoryController::delete/$1', ['as' => 'categories.delete']);
+
+        $routes->get('', 'CategoryController::index');
+        $routes->get('add-category', 'CategoryController::create');
+        $routes->post('store', 'CategoryController::store');
+        $routes->get('edit/(:any)', 'CategoryController::edit/$1');
+        $routes->post('update/(:num)', 'CategoryController::update/$1');
+        $routes->post('delete/(:num)', 'CategoryController::delete/$1');
 
     });
+
+    // $routes->group('categories', static function ($routes) {
+    //     $routes->get('', 'CategoryController::index', ['as' => 'categories.index']); // List categories
+    //     $routes->get('create', 'CategoryController::create', ['as' => 'categories.create']); // Show create form
+    //     $routes->post('store', 'CategoryController::store', ['as' => 'categories.store']); // Save new category
+    //     $routes->get('edit/(:num)', 'CategoryController::edit/$1', ['as' => 'categories.edit']); // Show edit form
+    //     $routes->post('update/(:num)', 'CategoryController::update/$1', ['as' => 'categories.update']); // Update category
+    //     $routes->delete('delete/(:num)', 'CategoryController::delete/$1', ['as' => 'categories.delete']);
+
+    // });
 
     $routes->group('subcategories', static function ($routes) {
 
@@ -78,14 +78,14 @@ $routes->group('admin', ['filter' => 'cifilter:admin'], function ($routes) {
         $routes->get('', 'AdminController::index', ['as' => 'admin.home']);
         $routes->get('logout', 'AdminController::logoutHandler', ['as' => 'admin.logout']);
         $routes->get('dashboard', 'AdminController::dashboard', ['as' => 'admin.dashboard']);
-        $routes->get('get-users', 'AdminController::getUsers', ['as' => 'get-users']);
+        $routes->get('users', 'AdminController::getAdmin', ['as' => 'get-users']);
         $routes->get('new-user', 'AdminController::addUser', ['as' => 'new-user']);
-        $routes->post('create-user', 'AdminController::createUser', ['as' => 'create-user']);
-        //$routes->get('users/edit/(:num)', 'AdminController::editUser/$1', ['as' => 'admin.users.edit']);
-        //$routes->post('users\delete/(:num)', 'AdminController::deleteUser/$1', ['as' => 'admin.users.delete']);
-        //$routes->get('users/get/(:num)', 'AdminController::getUser/$1', ['as' => 'admin.users.get']);
+        $routes->get('users/create', 'AdminController::create', ['as' => 'create-user']);
+        $routes->post('users/store', 'AdminController::store', ['as' => 'admin.users.edit']);
+        $routes->post('users/update/(:num)', 'AdminController::update/$1', ['as' => 'users.update']);
+        $routes->get('users/delete/(:num)', 'AdminController::delete/$1'); 
         $routes->post('get-users', 'AdminController::getUser', ['as' => 'admin.users.get']);
-        $routes->get('user/edit', 'AdminController::edit', ['as' => 'user.edit']);
+        $routes->get('users/edit/(:num)', 'AdminController::edit/$1');
         $routes->post('user/update', 'AdminController::update', ['as' => 'user.update']);
         $routes->post('user/delete', 'AdminController::delete', ['as' => 'user.delete']);
         $routes->get('profile', 'AdminController::profile', ['as' => 'profile']);
@@ -112,7 +112,37 @@ $routes->group('admin', ['filter' => 'cifilter:admin'], function ($routes) {
         $routes->post('update/(:num)', 'BlogController::update/$1');
         $routes->get('show/(:num)', 'BlogController::show/$1');
         $routes->delete('delete/(:num)', 'BlogController::delete/$1');
+        $routes->get('(:num)', 'BlogController::show/$1');
 
+
+
+    });
+
+    $routes->group('', static function ($routes) {
+
+        $routes->get('roles', 'RolesController::index');
+        $routes->get('roles/create', 'RolesController::create');
+        $routes->post('roles/store', 'RolesController::store');
+        $routes->get('roles/edit/(:num)', 'RolesController::edit/$1');
+        $routes->post('roles/update/(:num)', 'RolesController::update/$1');
+        $routes->get('roles/delete/(:num)', 'RolesController::delete/$1');
+    });
+
+    $routes->group('', static function ($routes) {
+
+        $routes->get('about-us', 'AboutController::index');
+        $routes->get('about-us/create', 'AboutController::create');
+        $routes->post('about-us/store', 'AboutController::store');
+        $routes->get('about-us/edit/(:num)', 'AboutController::edit/$1');
+        $routes->post('about-us/update/(:num)', 'AboutController::update/$1');
+        $routes->get('about-us/delete/(:num)', 'AboutController::delete/$1');
+
+        $routes->get('faqs', 'FaqController::index');
+        $routes->get('faqs/create', 'FaqController::create');
+        $routes->post('faqs/store', 'FaqController::store');
+        $routes->get('faqs/edit/(:num)', 'FaqController::edit/$1');
+        $routes->post('faqs/update/(:num)', 'FaqController::update/$1');
+        $routes->get('faqs/delete/(:num)', 'FaqController::delete/$1');
 
     });
 
@@ -126,8 +156,24 @@ $routes->group('', static function ($routes) {
         $routes->get('recommended', 'ProductController::recommended');
         $routes->post('wishlist/add', 'WishlistController::addToWishlist');
         $routes->get('details/(:any)', 'ProductController::details/$1');
+        $routes->post('submitReview', 'ProductController::submitReview');
+        $routes->post('send-enquiry', 'EnquiryController::sendEnquiry');
+
+
 
     });
+
+    $routes->group('', static function ($routes) {
+        $routes->get('our-impact', 'PagesController::ourImpact');
+        $routes->get('about-us', 'PagesController::aboutUs');
+        $routes->get('about-us/details/(:num)', 'AboutController::details/$1');
+        $routes->get('contact', 'PagesController::contact');
+        $routes->get('faqs', 'PagesController::faqs');
+
+
+    });
+
+
     $routes->group('categories', static function ($routes) {
         $routes->get('category/(:segment)', 'CategoryController::view/$1');
     });
@@ -148,7 +194,7 @@ $routes->group('', static function ($routes) {
     $routes->group('', static function ($routes) {
         $routes->get('/', 'Home::index');
         $routes->get('cart', 'CartController::viewCart');
-        // $routes->post('cart/add', 'CartController::addToCart');
+        $routes->post('cart/add', 'CartController::addToCart');
         $routes->get('cart/add/(:num)', 'CartController::addToCart/$1');
         // $routes->get('/cart/remove/(:num)', 'CartController::removeFromCart/$1');
         $routes->post('cart/add/(:num)', 'CartController::addToCart/$1');
@@ -159,24 +205,31 @@ $routes->group('', static function ($routes) {
         $routes->get('/checkout', 'CheckoutController::startCheckout');
         $routes->post('/checkout/process', 'CheckoutController::processOrder');
         $routes->get('/order/confirm/(:num)', 'CheckoutController::confirmOrder/$1');
-        $routes->post('payments/initiate', 'MpesaController::initiate');  // To initiate payment
+        $routes->post('payments/initiate', 'MpesaController::initiatePayment');  
         $routes->post('payments/callback', 'MpesaController::callback');
-        $routes->get('test', 'MpesaController::getAccessToken');
+        // $routes->get('test', 'MpesaController::getAccessToken');
         $routes->post('checkout/submitCheckoutForm', 'CheckoutController::submitCheckoutForm');
         $routes->post('wishlist/add', 'WishlistController::add');
         $routes->post('products/wishlist/add', 'WishlistController::add');
+        $routes->post('payment/process', 'PaymentController::processPayment');
+        $routes->get('payment/success', 'PaymentController::successPage');
+        $routes->get('payments/confirm-payment', 'MpesaController::confirmPayment');
+        // $routes->get('payment/success', 'PaymentController::success');  // For success page
+        // $routes->post('payment/confirmPayment', 'PaymentController::confirmPayment');  // For payment confirmation
 
-        $routes->post('/checkout/updateCheckoutForm', 'CheckoutController::submitCheckoutForm'); // Step 1: Save Delivery Address
-        $routes->post('/checkout/saveDeliveryMethod', 'CheckoutController::saveDeliveryMethod'); // Step 2: Save Delivery Method
-        $routes->post('/checkout/savePaymentMethod', 'CheckoutController::savePaymentMethod'); // Step 3: Save Payment Method
-        $routes->post('/checkout/confirmOrder', 'CheckoutController::confirmOrder'); // Step 4: Confirm Order
-        $routes->get('/checkout/success', 'CheckoutController::success'); // Redirect after order confirmation
+        $routes->post('checkout/updateCheckoutForm', 'CheckoutController::submitCheckoutForm'); 
+        $routes->post('checkout/saveDeliveryMethod', 'CheckoutController::saveDeliveryMethod'); 
+        $routes->post('checkout/savePaymentMethod', 'CheckoutController::savePaymentMethod'); 
+        $routes->post('checkout/confirmOrder', 'CheckoutController::confirmOrder');
+        $routes->get('checkout/success', 'CheckoutController::success'); 
         $routes->post('search/suggestions', 'SearchController::suggestions');
-
-
+        $routes->post('checkout/save-details', 'CheckoutController::saveUserDetails');
+        $routes->get('track-order', 'OrderController::trackOrderForm');
+        $routes->post('track-order', 'OrderController::trackOrder');
+        $routes->post('checkout/billing', 'CheckoutController::saveBillingDetails');
 
         // To handle callback
-        // $routes->post('cart/add/(:num)', 'CartController::add/$1'); // For adding items to the cart
+         $routes->get('test', 'CartController::test'); // For adding items to the cart
         $routes->get('cart/getCartItems', 'CartController::getCartItems'); // For fetching cart items to display in the modal
 
         $routes->get('logout', 'AuthController::logoutHandler');
@@ -187,7 +240,6 @@ $routes->group('', static function ($routes) {
         // $routes->post('/login', 'AuthController::authenticate');
         // $routes->get('/logout', 'AuthController::logout');
     });
-
 
     $routes->group('products/wishlist', ['filter' => 'cifilter:auth'], static function ($routes) {
         $routes->get('move-to-cart/(:num)', 'WishlistController::moveToCart/$1');

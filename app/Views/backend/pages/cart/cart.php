@@ -42,7 +42,7 @@
                                     <?php foreach ($cart as $item): ?>
                                         <tr>
                                             <td class="image" data-title="No">
-                                                <img src="<?= base_url('/backend/images/' . $item['options']['image']) ?>"
+                                                <img src="<?= base_url('public/backend/images/' . $item['options']['image']) ?>"
                                                     alt="<?= esc($item['name']) ?>">
                                             </td>
                                             <td class="product-des" data-title="Description">
@@ -50,7 +50,7 @@
                                                 <p class="product-name"><a href="#"><?= esc($item['name']) ?></a></p>
                                             </td>
                                             <td class="price" data-title="Price">
-                                                <span><?= esc($currency) ?> <?= number_format($item['price'], 2) ?></span>
+                                                <span><?= esc($currency) ?>         <?= number_format($item['price'], 2) ?></span>
                                             </td>
                                             <td class="qty" data-title="Qty">
                                                 <div class="input-group">
@@ -106,7 +106,7 @@
                             <td colspan="6" class="text-center">
                                 <h5 class="text-center">Your cart is empty!</h5>
                             </td>
-                            <a class="btn" href="/">Start Shopping</a>
+                            <a class="btn" href="<?= base_url('/') ?>">Start Shopping</a>
                         </div>
                     </tr>
                 </div>
@@ -195,7 +195,8 @@
         $(document).ready(function () {
             function updateQuantity(rowid, qty) {
                 $.ajax({
-                    url: '<?= base_url('cart/update') ?>',
+                    url: '<?= base_url('/cart/update') ?>',
+
                     method: 'POST',
                     data: { rowid: rowid, qty: qty },
                     success: function (response) {

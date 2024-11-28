@@ -75,7 +75,7 @@ class Filters extends BaseFilters
         'before' => [
 
             // 'honeypot',
-            // 'csrf',
+// 'csrf' => ['except' => ['cart/add/*']],
             // 'invalidchars',
         ],
         'after' => [
